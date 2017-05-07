@@ -21,7 +21,7 @@ namespace Spectrum.Plugins.ServerMod.cmds
             Utilities.sendMessage("[b][" + ColorEx.ColorToHexNGUI(new ColorHSB(color, 1.0f, 1.0f, 1f).ToColor()) + "]" + winList[r.Next(winList.Count)] + "[-][/b]");
         }
 
-        static List<string> winList = new List<string>
+        public static List<string> winList = new List<string>
         {
             "ALL RIGHT!",
             "ALRIGHT!",

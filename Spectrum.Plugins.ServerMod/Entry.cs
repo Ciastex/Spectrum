@@ -5,6 +5,8 @@ using Spectrum.API.Game.Network;
 using System.Collections.Generic;
 using Spectrum.Plugins.ServerMod.cmds;
 using System;
+using Spectrum.API.Configuration;
+using System.Linq;
 
 namespace Spectrum.Plugins.ServerMod
 {
@@ -14,29 +16,37 @@ namespace Spectrum.Plugins.ServerMod
         public string Author => "Nico";
         public string Contact => "SteamID: larnin";
         public APILevel CompatibleAPILevel => APILevel.UltraViolet;
-        public string PluginVersion = "V0.3";
+        public string PluginVersion = "V0.4";
 
-        //private List<string> hostCommands = new List<string>();
+        private static Settings Settings = new Settings(typeof(Entry));
 
         public void Initialize(IManager manager)
         {
+            load();
+
+            if (G.Sys.GameManager_.ModeID_ == GameModeID.Trackmogrify)
+            {
+                Utilities.sendMessage("You can't load a playlist in trackmogrify");
+                return;
+            }
+
             Events.Local.ChatSubmitMessage.Subscribe(data =>
             {
-                Chat_MessageSent(G.Sys.PlayerManager_.Current_.profile_.Name_, data.message_);
+                Chat_MessageSent(data.message_);
             });
 
             Events.ClientToAllClients.ChatMessage.Subscribe(data =>
             {
-                var author = ExtractMessageAuthor(data.message_);
+                var author = Utilities.ExtractMessageAuthor(data.message_);
                 var steamName = G.Sys.SteamworksManager_.GetUserName().ToLower().Trim();
                 var profileName = G.Sys.PlayerManager_.Current_.profile_.Name_.ToLower().Trim();
 
-                if (!IsSystemMessage(data.message_) && (author.ToLower().Trim() != steamName && author.ToLower().Trim() != profileName))
-                    Chat_MessageReceived(author, ExtractMessageBody(data.message_));
+                if (!Utilities.IsSystemMessage(data.message_) && (author.ToLower().Trim() != steamName && author.ToLower().Trim() != profileName))
+                    Chat_MessageReceived(author, Utilities.ExtractMessageBody(data.message_));
             });
         }
 
-        private void Chat_MessageSent(string author, string message)
+        private void Chat_MessageSent(string message)
         {
             var client = Utilities.localClient();
             if (client == null)
@@ -48,8 +58,10 @@ namespace Spectrum.Plugins.ServerMod
                     return;
 
                 int pos = message.IndexOf(' ');
-                string commandName = (pos > 0 ? message.Substring(1, message.IndexOf(' ')) : message.Substring(1).Trim());
+                string commandName = (pos > 0 ? message.Substring(1, pos) : message.Substring(1).Trim());
                 cmd c = cmd.all.getCommand(commandName);
+                if (c == null)
+                    return;
                 if (!c.canUseAsClient && c.perm != PermType.LOCAL)
                 {
                     Utilities.sendMessage("You can't use that command as client");
@@ -73,7 +85,7 @@ namespace Spectrum.Plugins.ServerMod
                     return;
 
                 int pos = message.IndexOf(' ');
-                string commandName = (pos > 0 ? message.Substring(1, message.IndexOf(' ')) : message.Substring(1)).Trim();
+                string commandName = (pos > 0 ? message.Substring(1, pos) : message.Substring(1)).Trim();
                 cmd c = cmd.all.getCommand(commandName);
                 if (c == null)
                 {
@@ -107,7 +119,7 @@ namespace Spectrum.Plugins.ServerMod
             }
                 
             int pos = message.IndexOf(' ');
-            string commandName = (pos > 0 ? message.Substring(1, message.IndexOf(' ')) : message.Substring(1)).Trim();
+            string commandName = (pos > 0 ? message.Substring(1, pos) : message.Substring(1)).Trim();
             cmd c = cmd.all.getCommand(commandName);
 
             if (c == null)
@@ -146,46 +158,54 @@ namespace Spectrum.Plugins.ServerMod
             
         }
 
-        //take from newer spectrum version (stable can't use messages events)
-        private static string ExtractMessageAuthor(string message)
-        {
-            try
-            {
-                // 1. [xxxxxx]user[xxxxxx]: adfsafasf
-                var withoutFirstColorTag = message.Substring(message.IndexOf(']') + 1, message.Length - message.IndexOf(']') - 1);
-                // 2. user[xxxxxx]: adfsafasf
-                var withoutSecondColorTag = withoutFirstColorTag.Substring(0, withoutFirstColorTag.IndexOf('['));
-                // 3. user
-
-                return withoutSecondColorTag.Trim();
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-
-        private static bool IsSystemMessage(string message)
-        {
-            return message.Contains("[c]") && message.Contains("[/c]");
-        }
-
-        private static string ExtractMessageBody(string message)
-        {
-            try
-            {
-                // 1. [xxxxxx]user[xxxxxx]: body
-                return message.Substring(message.IndexOf(':') + 1).Trim();
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-
         private void printClient()
         {
             Utilities.sendMessage(Utilities.localClient().GetChatName() + " " + PluginVersion);
+        }
+
+        public static void load()
+        {
+            ValidateSettings();
+
+            try
+            {
+                PlayCMD.playersCanAddMap = (bool)Settings["playersCanAddMap"];
+                PlayCMD.addOneMapOnly = (bool)Settings["addOneMapOnly"];
+                AutoCMD.voteNext = (bool)Settings["voteNext"];
+                WinCMD.winList = ((string[])Settings["win"]).ToList();
+                RipCMD.ripList = ((string[])Settings["rip"]).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e);
+                Console.WriteLine(e.Source);
+            }
+        }
+
+        public static void save()
+        {
+            Settings["playersCanAddMap"] = PlayCMD.playersCanAddMap;
+            Settings["addOneMapOnly"] = PlayCMD.addOneMapOnly;
+            Settings["voteNext"] = AutoCMD.voteNext;
+
+            Settings.Save();
+        }
+
+        private static void ValidateSettings()
+        {
+            if (!Settings.ContainsKey("playersCanAddMap"))
+                Settings["playersCanAddMap"] = false;
+            if (!Settings.ContainsKey("addOneMapOnly"))
+                Settings["addOneMapOnly"] = true;
+            if (!Settings.ContainsKey("voteNext"))
+                Settings["voteNext"] = false;
+            if (!Settings.ContainsKey("win"))
+                Settings["win"] = WinCMD.winList;
+            if (!Settings.ContainsKey("rip"))
+                Settings["rip"] = RipCMD.ripList;
+
+            Settings.Save();
         }
     }
 }

@@ -43,11 +43,15 @@
     <Compile Include="cmdlist.cs" />
     <Compile Include="cmds\AutoCMD.cs" />
     <Compile Include="cmds\AutoSpecCMD.cs" />
+    <Compile Include="cmds\ClearCMD.cs" />
+    <Compile Include="cmds\DateCMD.cs" />
+    <Compile Include="cmds\LoadCMD.cs" />
     <Compile Include="cmds\PluginCMD.cs" />
     <Compile Include="cmds\cmd.cs" />
     <Compile Include="cmds\CountdownCMD.cs" />
     <Compile Include="cmds\DelCMD.cs" />
     <Compile Include="cmds\RipCMD.cs" />
+    <Compile Include="cmds\SaveCMD.cs" />
     <Compile Include="cmds\ScoresCMD.cs" />
     <Compile Include="cmds\ForceStartCMD.cs" />
     <Compile Include="cmds\HelpCMD.cs" />
@@ -57,6 +61,7 @@
     <Compile Include="cmds\PlayCMD.cs" />
     <Compile Include="cmds\PlaylistCMD.cs" />
     <Compile Include="cmds\ServerCMD.cs" />
+    <Compile Include="cmds\SettingsCMD.cs" />
     <Compile Include="cmds\ShuffleCMD.cs" />
     <Compile Include="cmds\SpecCMD.cs" />
     <Compile Include="cmds\StartvoteCMD.cs" />

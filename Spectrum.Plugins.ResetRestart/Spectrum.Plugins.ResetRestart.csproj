@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{75E10FD7-6066-47D0-A802-0FDCF3FB5D02}</ProjectGuid>
+    <ProjectGuid>{7EE4C9FC-1060-486E-86E4-5FB8FEF57100}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Spectrum.Plugins.ResetRestart</RootNamespace>

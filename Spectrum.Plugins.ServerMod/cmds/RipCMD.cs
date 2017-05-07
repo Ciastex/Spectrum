@@ -23,7 +23,7 @@ namespace Spectrum.Plugins.ServerMod.cmds
             Utilities.sendMessage("[b][" + ColorEx.ColorToHexNGUI(new ColorHSB(color, 0.5f, 0.5f, 1f).ToColor()) + "]" + ripList[r.Next(ripList.Count)] + "[-][/b]");
         }
 
-        static List<string> ripList = new List<string>
+        public static List<string> ripList = new List<string>
         {
             "ACCESS VIOLATION!",
             "AW, THAT'S TOO BAD!",

@@ -62,9 +62,11 @@ namespace Spectrum.Plugins.ServerMod.cmds
                     G.Sys.GameManager_.GoToLobby();
                 else
                 {
-                    var p = players[0];
+                    var localPlayer = G.Sys.PlayerManager_.Current_.playerData_;
+                    localPlayer.Spectate();
+                    /*var p = players[0];
                     if (p.IsLocal_)
-                        StaticTargetedEvent<Finished.Data>.Broadcast(p.NetworkPlayer_, default(Finished.Data));
+                        StaticTargetedEvent<Finished.Data>.Broadcast(p.NetworkPlayer_, default(Finished.Data));*/
                 }
             }
             yield return null;

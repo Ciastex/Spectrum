@@ -8,6 +8,7 @@ namespace Spectrum.Plugins.ServerMod.cmds
     class PlayCMD : cmd
     {
         public static bool playersCanAddMap = false;
+        public static bool addOneMapOnly = true;
 
         public override string name { get { return "play"; } }
         public override PermType perm { get { return playersCanAddMap ? PermType.ALL : PermType.HOST; } }
@@ -17,7 +18,7 @@ namespace Spectrum.Plugins.ServerMod.cmds
         {
             Utilities.sendMessage("!play [lvl name]: Adds a level to the playlist as the next to be played.");
             Utilities.sendMessage("!play [filter] : Use filters to find a level");
-            Utilities.sendMessage("Valid filters : -mode -m -name -n -author -a -index -i -all");
+            Utilities.sendMessage("Valid filters : -mode -m -name -n -author -a -index -i -last -l -all");
             Utilities.sendMessage("The level must be know by the server to be show");
         }
 
@@ -55,6 +56,13 @@ namespace Spectrum.Plugins.ServerMod.cmds
                 LevelList.printLevels(list, m.page, 10, true);
                 //LevelList.printLevels(list, 10, true);
                 return;
+            }
+
+            if(playersCanAddMap && !p.IsLocal_)
+            {
+                var value = list[0];
+                list.Clear();
+                list.Add(value);
             }
 
             LevelPlaylist playlist = new LevelPlaylist();

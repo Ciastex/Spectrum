@@ -30,6 +30,28 @@ namespace Spectrum.Plugins.ServerMod.cmds
                 return;
             }
 
+            if (Utilities.isOnGamemode())
+                shuffleOnGame(playlist);
+            else shuffleOnLobby(playlist);
+
+            G.Sys.GameManager_.LevelPlaylist_.SetIndex(0);
+            G.Sys.GameManager_.NextLevelName_ = G.Sys.GameManager_.LevelPlaylist_.Playlist_[0].levelNameAndPath_.levelName_;
+            G.Sys.GameManager_.NextLevelPath_ = G.Sys.GameManager_.LevelPlaylist_.Playlist_[0].levelNameAndPath_.levelPath_;
+
+            Utilities.sendMessage("Playlist shuffled !");
+        }
+
+        void shuffleOnLobby(LevelPlaylist playlist)
+        {
+            var shuffledList = playlist.Playlist_;
+            Utilities.Shuffle(playlist.Playlist_, new Random());
+            G.Sys.GameManager_.LevelPlaylist_.Clear();
+            foreach (var lvl in shuffledList)
+                G.Sys.GameManager_.LevelPlaylist_.Add(lvl);
+        }
+
+        void shuffleOnGame(LevelPlaylist playlist)
+        {
             int index = G.Sys.GameManager_.LevelPlaylist_.Index_;
             var item = playlist.Playlist_[index];
             playlist.Playlist_.RemoveAt(index);
@@ -40,12 +62,6 @@ namespace Spectrum.Plugins.ServerMod.cmds
             G.Sys.GameManager_.LevelPlaylist_.Add(item);
             foreach (var lvl in shuffledList)
                 G.Sys.GameManager_.LevelPlaylist_.Add(lvl);
-
-            G.Sys.GameManager_.NextLevelName_ = item.levelNameAndPath_.levelName_;
-            G.Sys.GameManager_.NextLevelPath_ = item.levelNameAndPath_.levelPath_;
-            G.Sys.GameManager_.LevelPlaylist_.SetIndex(0);
-
-            Utilities.sendMessage("Playlist shuffled !");
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Spectrum.Plugins.ServerMod.cmds
         {
             Utilities.sendMessage("!level [name]: Find a level who have that keyword on his name");
             Utilities.sendMessage("!level [filter] : Use filters to find a level");
-            Utilities.sendMessage("Valid filters : -mode -m -name -n -author -a -index -i");
+            Utilities.sendMessage("Valid filters : -mode -m -name -n -author -a -index -i -page -p -last -l");
             Utilities.sendMessage("The level must be know by the server to be show");
         }
 

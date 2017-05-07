@@ -2,6 +2,7 @@
 using Events.ClientToAllClients;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 
@@ -124,6 +125,49 @@ namespace Spectrum.Plugins.ServerMod
             }
 
             return true;
+        }
+
+        public static List<string> playlists()
+        {
+            return DirectoryEx.GetFiles(Resource.PersonalLevelPlaylistsDirPath_).ToList();
+        }
+
+        //take from newer spectrum version (stable can't use messages events)
+        public static string ExtractMessageAuthor(string message)
+        {
+            try
+            {
+                var onlyName = message.Substring(0, message.IndexOf(":"));
+                // 1. [xxxxxx]user[xxxxxx]: adfsafasf
+                var withoutFirstColorTag = onlyName.Substring(onlyName.IndexOf(']') + 1, onlyName.Length - onlyName.IndexOf(']') - 1);
+                // 2. user[xxxxxx]: adfsafasf
+                var withoutSecondColorTag = withoutFirstColorTag.Substring(0, withoutFirstColorTag.LastIndexOf('['));
+                // 3. user
+
+                return NGUIText.StripSymbols(withoutSecondColorTag).Trim();
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        public static bool IsSystemMessage(string message)
+        {
+            return message.Contains("[c]") && message.Contains("[/c]");
+        }
+
+        public static string ExtractMessageBody(string message)
+        {
+            try
+            {
+                // 1. [xxxxxx]user[xxxxxx]: body
+                return message.Substring(message.IndexOf(':') + 1).Trim();
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
     }
 }
