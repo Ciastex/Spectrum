@@ -10,6 +10,7 @@ using Spectrum.API.Network.Events;
 using Spectrum.API.Reflection;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -18,20 +19,20 @@ namespace Spectrum.API.Security
 {
     internal class CheatSystem : ICheatSystem
     {
-        private readonly Dictionary<Assembly, bool> _cheatStates;
+        private readonly Dictionary<Assembly, List<string>> _cheatStates;
         private readonly SubscriberList _subscriberList;
 
         private Logging.Logger Logger { get; }
         private IManager Manager { get; }
 
-        public bool AnyCheatsEnabled => _cheatStates.Values.Contains(true);
+        public bool AnyCheatsEnabled => _cheatStates.Values.Any(x => x.Any());
 
         public event EventHandler<CheatStateInfoEventArgs> CheatStateInfoReceived;
         public event EventHandler<CheatStateFailureEventArgs> CheatStateInfoFailure;
 
         internal CheatSystem(IManager manager)
         {
-            _cheatStates = new Dictionary<Assembly, bool>();
+            _cheatStates = new Dictionary<Assembly, List<string>>();
 
             _subscriberList = new SubscriberList
             {
@@ -40,29 +41,37 @@ namespace Spectrum.API.Security
             };
             _subscriberList.Subscribe();
 
-            Logger = new Logging.Logger("network.log");
+            Logger = new Logging.Logger("cheatsystem.log");
 
             Manager = manager;
             manager.EventRouter.RegisterServerToClientCallback(EventNames.CheatStateInfoRequest, OnCheatStateInfoRequested);
             manager.EventRouter.RegisterClientToServerCallback(EventNames.CheatStateInfoResponse, OnCheatStateInfoReceived);
         }
 
-        public void Enable()
+        public void Enable(string key)
         {
             var callingAssembly = Assembly.GetCallingAssembly();
 
             if (!_cheatStates.ContainsKey(callingAssembly))
-                _cheatStates.Add(callingAssembly, true);
+                _cheatStates.Add(callingAssembly, new List<string>() { key });
             else
-                _cheatStates[callingAssembly] = true;
+            {
+                if (!_cheatStates[callingAssembly].Contains(key))
+                    _cheatStates[callingAssembly].Add(key);
+                else Logger.Warning($"Plugin assembly {Path.GetFileName(callingAssembly.Location)} tried to add cheat key '{key}' more than once.");
+            }
         }
 
-        public void Disable()
+        public void Disable(string key)
         {
             var callingAssembly = Assembly.GetCallingAssembly();
 
             if (_cheatStates.ContainsKey(callingAssembly))
-                _cheatStates[callingAssembly] = false;
+            {
+                if (_cheatStates[callingAssembly].Contains(key))
+                    _cheatStates[callingAssembly].Remove(key);
+                else Logger.Warning($"Plugin assembly {Path.GetFileName(callingAssembly.Location)} tried to remove non-existent cheat key '{key}'.");
+            }
         }
 
         private void OnSceneLoadFinished(LoadFinish.Data data)
@@ -72,7 +81,7 @@ namespace Spectrum.API.Security
                 IsProperty = false,
                 IsStatic = false,
                 MemberName = "anyGameplayCheatsUsedThisLevel_"
-            }, _cheatStates.Values.Contains(true));
+            }, AnyCheatsEnabled);
         }
 
         private void OnClientConnected(ClientConnected.Data data)

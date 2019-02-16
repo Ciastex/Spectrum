@@ -9,7 +9,7 @@ namespace Spectrum.API.Interfaces.Systems
         event EventHandler<CheatStateFailureEventArgs> CheatStateInfoFailure;
 
         bool AnyCheatsEnabled { get; }
-        void Enable();
-        void Disable();
+        void Enable(string key);
+        void Disable(string key);
     }
 }
