@@ -53,8 +53,16 @@ namespace Spectrum.Prism
             CreateBackup();
             PreparePatches();
             RunPatches();
-
             ModuleWriter.SavePatchedFile(_distanceAssemblyDefinition, _distanceAssemblyFilename);
+
+            // Run decapsulation after all other configured patches.
+            _patcher.AddPatch(new DecapsulationPatch());
+            _patcher.RunSpecific("Decapsulation");
+
+            var devDllFileName = $"{Path.GetFileNameWithoutExtension(_distanceAssemblyFilename)}.dev.dll";
+            ModuleWriter.SavePatchedFile(_distanceAssemblyDefinition, devDllFileName);
+            ColoredOutput.WriteSuccess($"Saved decapsulated development DLL to {devDllFileName}");
+
             ColoredOutput.WriteSuccess("Patch process completed.");
         }
 
