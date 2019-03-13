@@ -1,5 +1,6 @@
 ﻿using Spectrum.API.Gui.Data;
 using Spectrum.API.Gui.Menu;
+using UnityEngine;
 
 namespace Spectrum.API.Gui.UI
 {
@@ -18,6 +19,14 @@ namespace Spectrum.API.Gui.UI
             this.Mode = mode;
         }
 
-        public abstract void Tweak(SpectrumMenu menu);
+        public virtual void Tweak(SpectrumMenu menu)
+        {
+            GameObject item = menu.OptionsTable().transform.Find(this.Name).gameObject;
+            if (item != null)
+            {
+                MenuItemInfo info = item.AddComponent<MenuItemInfo>();
+                info.Item = this;
+            }
+        }
     }
 }

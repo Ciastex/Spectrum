@@ -18,6 +18,7 @@ namespace Spectrum.API.Gui.UI.Items
         public override void Tweak(SpectrumMenu menu)
         {
             menu.TweakAction(this.Name, this.OnClick, this.Description);
+            base.Tweak(menu);
         }
     }
 }

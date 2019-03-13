@@ -19,6 +19,7 @@ namespace Spectrum.API.Gui.UI.Items
             menu.TweakAction(this.Name, () =>
             {
                 MenuSystem.ShowMenu(MenuTree, menu, 0);
+                base.Tweak(menu);
             }, this.Description);
         }
     }

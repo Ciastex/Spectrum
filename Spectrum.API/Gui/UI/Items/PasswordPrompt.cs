@@ -52,6 +52,7 @@ namespace Spectrum.API.Gui.UI.Items
         {
             menu.TweakAction(this.Name, () => {
                 InputPromptPanel.CreatePassword(new InputPromptPanel.OnSubmit(this.OnSubmit), new InputPromptPanel.OnPop(this.OnCancel), this.Title, this.DefaultText);
+                base.Tweak(menu);
             }, this.Description);
         }
     }

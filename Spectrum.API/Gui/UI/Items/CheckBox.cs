@@ -23,6 +23,7 @@ namespace Spectrum.API.Gui.UI.Items
         public override void Tweak(SpectrumMenu menu)
         {
             menu.TweakBool(this.Name, this.GetValue(), this.SetValue, this.Description);
+            base.Tweak(menu);
         }
     }
 }

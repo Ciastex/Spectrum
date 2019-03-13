@@ -60,6 +60,7 @@
     <Compile Include="Extensions\Exceptions\SettingsException.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Gui\Data\MenuItemInfo.cs" />
     <Compile Include="Gui\Data\MenuTree.cs" />
     <Compile Include="Gui\MenuSystem.cs" />
     <Compile Include="Gui\Menu\SpectrumMenu.cs" />

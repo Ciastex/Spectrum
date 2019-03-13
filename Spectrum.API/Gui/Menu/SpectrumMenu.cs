@@ -1,8 +1,7 @@
-﻿using Spectrum.API.Gui.Data;
+﻿using Events;
+using Spectrum.API.Events.Gui;
+using Spectrum.API.Gui.Data;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace Spectrum.API.Gui.Menu
@@ -24,19 +23,26 @@ namespace Spectrum.API.Gui.Menu
         // Menu description
         public string Description { get; set; }
 
-
+        // Menu identifier
+        public string Id {
+            get
+            {
+                return this.Entries.Id;
+            }
+        }
+        
         #region Menu Objects
-        private GameObject TitleLabel()
+        public GameObject TitleLabel()
         {
             return PanelObject_.transform.Find("MenuTitleTemplate/UILabel - Title").gameObject;
         }
 
-        private GameObject DescriptionLabel()
+        public GameObject DescriptionLabel()
         {
             return PanelObject_.transform.Find("MenuTitleTemplate/UILabel - Description").gameObject;
         }
 
-        private GameObject OptionsTable()
+        public GameObject OptionsTable()
         {
             return PanelObject_.transform.Find("Options/OptionsTable").gameObject;
         }
@@ -73,16 +79,17 @@ namespace Spectrum.API.Gui.Menu
         {
             MenuTree currentTree = Entries.GetItems(MenuSystem.GetCurrentMode());
             for (int i = PageIndex * MaxEntriesPerPage; i < (PageIndex * MaxEntriesPerPage) + MaxEntriesPerPage; i++)
-            {
                 if (i < currentTree.Count)
                     currentTree[i].Tweak(this);
                 else break;
-            }
+            StaticEvent<MenuOpened.Data>.Broadcast(new MenuOpened.Data(this));
         }
 
         // On menu closed
         public override void OnPanelPop()
         {
+            foreach (var item in OptionsTable().GetChildren().GetComponent<MenuItemInfo>())
+                item.Destroy();
             controller.Destroy();
             MenuPanel.Destroy();
             PanelObject_.Destroy();
