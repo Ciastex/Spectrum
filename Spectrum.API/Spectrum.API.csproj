@@ -57,8 +57,8 @@
     <Compile Include="Defaults.cs" />
     <Compile Include="Events\Gui\MenuOpened.cs" />
     <Compile Include="Events\PluginInitializationEventArgs.cs" />
-    <Compile Include="Extensions\Exceptions\MetadataReadException.cs" />
-    <Compile Include="Extensions\Exceptions\SettingsException.cs" />
+    <Compile Include="Exceptions\MetadataReadException.cs" />
+    <Compile Include="Exceptions\SettingsException.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Gui\Data\MenuItemInfo.cs" />
