@@ -56,10 +56,25 @@
     <Compile Include="Configuration\Settings.cs" />
     <Compile Include="Defaults.cs" />
     <Compile Include="Events\PluginInitializationEventArgs.cs" />
-    <Compile Include="Exceptions\MetadataReadException.cs" />
-    <Compile Include="Exceptions\SettingsException.cs" />
+    <Compile Include="Extensions\Exceptions\MetadataReadException.cs" />
+    <Compile Include="Extensions\Exceptions\SettingsException.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Gui\Data\MenuTree.cs" />
+    <Compile Include="Gui\MenuSystem.cs" />
+    <Compile Include="Gui\Menu\SpectrumMenu.cs" />
+    <Compile Include="Gui\UI\Items\DecimalSlider.cs" />
+    <Compile Include="Gui\UI\Items\InputPrompt.cs" />
+    <Compile Include="Gui\UI\Items\IntegerSlider.cs" />
+    <Compile Include="Gui\UI\Items\ListBox.cs" />
+    <Compile Include="Gui\UI\Items\PasswordPrompt.cs" />
+    <Compile Include="Gui\UI\Items\SubmenuButton.cs" />
+    <Compile Include="Gui\Data\MenuDisplayMode.cs" />
+    <Compile Include="Gui\UI\Items\CheckBox.cs" />
+    <Compile Include="Gui\UI\MenuItem.cs" />
+    <Compile Include="Gui\Menu\SpectrumMenuAbstract.cs" />
+    <Compile Include="Gui\UI\Items\ActionButton.cs" />
+    <Compile Include="Interfaces\Systems\IOptionsMenuManager.cs" />
     <Compile Include="IPC\PluginInfo.cs" />
     <Compile Include="Reflection\MemberMetadata.cs" />
     <Compile Include="Security\CheatMode.cs" />
@@ -77,6 +92,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemVersion.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

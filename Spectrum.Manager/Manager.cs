@@ -9,6 +9,7 @@ using Spectrum.API.Interfaces.Systems;
 using Spectrum.API.IPC;
 using Spectrum.API.Logging;
 using Spectrum.Manager.Input;
+using Spectrum.Manager.Gui;
 using Spectrum.Manager.Runtime;
 
 namespace Spectrum.Manager
@@ -21,6 +22,7 @@ namespace Spectrum.Manager
 
         public event EventHandler<PluginInitializationEventArgs> PluginInitialized;
         public IHotkeyManager Hotkeys { get; set; }
+        public IOptionsMenuManager OptionMenus { get; set; }
 
         public bool IsEnabled { get; set; } = true;
         public bool CanLoadPlugins => Directory.Exists(Defaults.ManagerPluginDirectory);
@@ -42,6 +44,7 @@ namespace Spectrum.Manager
             }
 
             Hotkeys = new HotkeyManager();
+            OptionMenus = new OptionsMenuManager();
 
             LoadExtensions();
             StartExtensions();

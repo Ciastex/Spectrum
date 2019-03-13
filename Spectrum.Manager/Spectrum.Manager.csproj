@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Global.cs" />
     <Compile Include="Input\HotkeyManager.cs" />
+    <Compile Include="Gui\OptionsMenuManager.cs" />
     <Compile Include="Runtime\Metadata\ManifestValidationFlags.cs" />
     <Compile Include="Runtime\Metadata\PluginLoadData.cs" />
     <Compile Include="Runtime\Metadata\PluginManifest.cs" />
