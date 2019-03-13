@@ -55,6 +55,7 @@
     <Compile Include="Configuration\Section.cs" />
     <Compile Include="Configuration\Settings.cs" />
     <Compile Include="Defaults.cs" />
+    <Compile Include="Events\Gui\MenuOpened.cs" />
     <Compile Include="Events\PluginInitializationEventArgs.cs" />
     <Compile Include="Extensions\Exceptions\MetadataReadException.cs" />
     <Compile Include="Extensions\Exceptions\SettingsException.cs" />
