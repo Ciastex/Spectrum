@@ -10,7 +10,7 @@ namespace Spectrum.API.Interfaces.Systems
         event EventHandler<PluginInitializationEventArgs> PluginInitialized;
 
         IHotkeyManager Hotkeys { get; }
-        IOptionsMenuManager OptionMenus { get; }
+        IMenuManager Menus { get; }
         
         void SendIPC(string ipcIdentifier, IPCData data);
         bool IsAvailableForIPC(string ipcIdentifier);

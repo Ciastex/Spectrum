@@ -1,161 +1,146 @@
-﻿using Spectrum.API.Gui.UI;
+﻿using Spectrum.API.Extensions;
+using Spectrum.API.GUI.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Spectrum.API.Extensions;
-using Spectrum.API.Gui.UI.Items;
-using System;
 
-namespace Spectrum.API.Gui.Data
+namespace Spectrum.API.GUI.Data
 {
     public class MenuTree : List<MenuItem>
     {
         public string Title { get; set; }
         public string Id { get; private set; }
 
-        #region constructors
         public MenuTree(string id, string title)
         {
-            this.Id = id;
-            this.Title = title;
-        }
-        #endregion
-        #region tweak methods
-        #region action button
-        public void TweakAction(bool mainmenu, bool pausemenu, string id, string name, Action action, string description = null)
-        {
-            Add(new ActionButton(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, action, description));
-        }
-        #endregion
-        #region check box
-        public void TweakBool(bool mainmenu, bool pausemenu, string id, string name, Func<bool> get, Action<bool> set, string description = null)
-        {
-            Add(new CheckBox(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, get, set, description));
+            Id = id;
+            Title = title;
         }
 
-        public void TweakBool(bool mainmenu, bool pausemenu, string id, string name, bool startvalue, Action<bool> set, string description = null)
+        public ActionButton ActionButton(MenuDisplayMode displayMode, string id, string name, Action action, string description = null)
         {
-            Add(new CheckBox(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, startvalue, set, description));
-        }
-        #endregion
-        #region decimal slider
-        public void TweakFloat(bool mainmenu, bool pausemenu, string id, string name, float min, float max, float cursor, Func<float> get, Action<float> set, string description = null)
-        {
-            Add(new DecimalSlider(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, min, max, cursor, get, set, description));
+            var actionButton = new ActionButton(displayMode, id, name)
+                .WhenClicked(action)
+                .WithDescription(description);
+
+            Add(actionButton);
+
+            return actionButton as ActionButton;
         }
 
-        public void TweakFloat(bool mainmenu, bool pausemenu, string id, string name, float startvalue, Action<float> set, string description = null)
+        public CheckBox CheckBox(MenuDisplayMode displayMode, string id, string name, Func<bool> getter, 
+            Action<bool> setter, bool defaultValue = false, string description = null)
         {
-            Add(new DecimalSlider(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, startvalue, set, description));
+            var checkBox = new CheckBox(displayMode, id, name)
+                .WithGetter(getter)
+                .WithSetter(setter)
+                .WithDefaultValue(defaultValue)
+                .WithDescription(description);
+
+            Add(checkBox);
+
+            return checkBox as CheckBox;
         }
 
-        public void TweakFloat(bool mainmenu, bool pausemenu, string id, string name, float startvalue, float min, float max, Action<float> set, string description = null)
+        public FloatSlider FloatSlider(MenuDisplayMode displayMode, string id, string name, 
+            Func<float> getter, Action<float> setter, float minimum = 0.0f, 
+            float maximum = 1.0f, float defaultValue = 0.0f, string description = null)
         {
-            Add(new DecimalSlider(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, startvalue, min, max, set, description));
-        }
-        #endregion
-        #region input prompt
-        public void TweakInput(bool mainmenu, bool pausemenu, string id, string name, string title, string defaulttext, Action<string> submit, Func<string, string> validate, Action closed, string description = null)
-        {
-            Add(new InputPrompt(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, title, defaulttext, submit, validate, closed, description));
+            var floatSlider = new FloatSlider(displayMode, id, name)
+                .WithGetter(getter)
+                .WithSetter(setter)
+                .LimitedByRange(minimum, maximum)
+                .WithDefaultValue(defaultValue)
+                .WithDescription(description);
+
+            Add(floatSlider);
+
+            return floatSlider as FloatSlider;
         }
 
-        public void TweakInput(bool mainmenu, bool pausemenu, string id, string name, string title, string defaulttext, Action<string> submit, Action closed, string description = null)
+        public IntegerSlider IntegerSlider(MenuDisplayMode displayMode, string id, string name,
+            Func<int> getter, Action<int> setter, int minimum = 0, 
+            int maximum = 10, int defaultValue = 0, string description = null)
         {
-            Add(new InputPrompt(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, title, defaulttext, submit, closed, description));
+            var integerSlider = new IntegerSlider(displayMode, id, name)
+                .WithGetter(getter)
+                .WithSetter(setter)
+                .LimitedByRange(minimum, maximum)
+                .WithDefaultValue(defaultValue)
+                .WithDescription(description);
+
+            Add(integerSlider);
+
+            return integerSlider as IntegerSlider;
         }
 
-        public void TweakInput(bool mainmenu, bool pausemenu, string id, string name, string title, string defaulttext, Action<string> submit, string description = null)
+        public InputPrompt InputPrompt(MenuDisplayMode displayMode, string id, string name, 
+            Action<string> submitAction, Action<InputPrompt> closeAction = null, Func<string, string> validator = null, 
+            string title = null, string defaultValue = null, string description = null)
         {
-            Add(new InputPrompt(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, title, defaulttext, submit, description));
+            var inputPrompt = new InputPrompt(displayMode, id, name)
+                .WithSubmitAction(submitAction)
+                .WithCloseAction(closeAction)
+                .ValidatedBy(validator)
+                .WithTitle(title)
+                .WithDefaultValue(defaultValue)
+                .WithDescription(description);
+
+            Add(inputPrompt);
+
+            return inputPrompt as InputPrompt;
         }
 
-        public void TweakInput(bool mainmenu, bool pausemenu, string id, string name, string title, string defaulttext, Action<string> submit, Func<string, string> validate, string description = null)
+        public PasswordPrompt PasswordPrompt(MenuDisplayMode displayMode, string id, string name, 
+            Action<string> submitAction, Action<InputPrompt> closeAction, Func<string, string> validator, 
+            string title = null, string defaultValue = null, string description = null)
         {
-            Add(new InputPrompt(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, title, defaulttext, submit, validate, description));
-        }
-        #endregion
-        #region integer slider
-        public void TweakInt(bool mainmenu, bool pausemenu, string id, string name, int min, int max, int cursor, Func<int> get, Action<int> set, string description = null)
+            var passwordPrompt = new PasswordPrompt(displayMode, id, name)
+                .WithSubmitAction(submitAction)
+                .WithCloseAction(closeAction)
+                .ValidatedBy(validator)
+                .WithTitle(title)
+                .WithDefaultValue(defaultValue)
+                .WithDescription(description);
+
+            Add(passwordPrompt);
+
+            return passwordPrompt as PasswordPrompt;
+        }       
+        
+        public ListBox<T> ListBox<T>(MenuDisplayMode displayMode, string id, string name, 
+            Func<T> getter, Action<T> setter, Dictionary<string, T> entries, 
+            string description = null)
         {
-            Add(new IntegerSlider(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, min, max, cursor, get, set, description));
+            var listBox = new ListBox<T>(displayMode, id, name)
+                .WithGetter(getter)
+                .WithSetter(setter)
+                .WithEntries(entries)
+                .WithDescription(description);
+
+            Add(listBox);
+
+            return listBox as ListBox<T>;
         }
 
-        public void TweakInt(bool mainmenu, bool pausemenu, string id, string name, int startvalue, Action<int> set, string description = null)
+        public SubmenuButton SubmenuButton(MenuDisplayMode displayMode, string id, string name, 
+            MenuTree menuTree, string description = null)
         {
-            Add(new IntegerSlider(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, startvalue, set, description));
-        }
+            var submenuButton = new SubmenuButton(displayMode, id, name)
+                .NavigatesTo(menuTree)
+                .WithDescription(description);
 
-        public void TweakInt(bool mainmenu, bool pausemenu, string id, string name, int startvalue, int min, int max, Action<int> set, string description = null)
-        {
-            Add(new IntegerSlider(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, startvalue, min, max, set, description));
-        }
-        #endregion
-        #region password prompt
-        public void TweakPassword(bool mainmenu, bool pausemenu, string id, string name, string title, string defaulttext, Action<string> submit, Func<string, string> validate, Action closed, string description = null)
-        {
-            Add(new PasswordPrompt(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, title, defaulttext, submit, validate, closed, description));
-        }
+            Add(submenuButton);
 
-        public void TweakPassword(bool mainmenu, bool pausemenu, string id, string name, string title, string defaulttext, Action<string> submit, Action closed, string description = null)
-        {
-            Add(new PasswordPrompt(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, title, defaulttext, submit, closed, description));
+            return submenuButton as SubmenuButton;
         }
-
-        public void TweakPassword(bool mainmenu, bool pausemenu, string id, string name, string title, string defaulttext, Action<string> submit, string description = null)
-        {
-            Add(new PasswordPrompt(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, title, defaulttext, submit, description));
-        }
-
-        public void TweakPassword(bool mainmenu, bool pausemenu, string id, string name, string title, string defaulttext, Action<string> submit, Func<string, string> validate, string description = null)
-        {
-            Add(new PasswordPrompt(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, title, defaulttext, submit, validate, description));
-        }
-        #endregion
-        #region list box
-        public void TweakList<T>(bool mainmenu, bool pausemenu, string id, string name, Func<T> get, Action<T> set, Func<KeyValuePair<string, T>[]> entries, string description = null)
-        {
-            Add(new ListBox<T>(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, get, set, entries, description));
-        }
-
-        public void TweakList<T>(bool mainmenu, bool pausemenu, string id, string name, Func<T> get, Action<T> set, KeyValuePair<string, T>[] entries, string description = null)
-        {
-            Add(new ListBox<T>(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, get, set, entries, description));
-        }
-
-        public void TweakList<T>(bool mainmenu, bool pausemenu, string id, string name, Func<T> get, Action<T> set, Dictionary<string, T> entries, string description = null)
-        {
-            Add(new ListBox<T>(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, get, set, entries, description));
-        }
-
-        public void TweakList<T>(bool mainmenu, bool pausemenu, string id, string name, T startValue, Action<T> set, Func<KeyValuePair<string, T>[]> entries, string description = null)
-        {
-            Add(new ListBox<T>(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, () => { return startValue; }, set, entries, description));
-        }
-
-        public void TweakList<T>(bool mainmenu, bool pausemenu, string id, string name, T startValue, Action<T> set, KeyValuePair<string, T>[] entries, string description = null)
-        {
-            Add(new ListBox<T>(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, () => { return startValue; }, set, entries, description));
-        }
-
-        public void TweakList<T>(bool mainmenu, bool pausemenu, string id, string name, T startValue, Action<T> set, Dictionary<string, T> entries, string description = null)
-        {
-            Add(new ListBox<T>(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, () => { return startValue; }, set, entries, description));
-        }
-        #endregion
-        #region submenu button
-        public void TweakMenu(bool mainmenu, bool pausemenu, string id, string name, MenuTree menu, string description = null)
-        {
-            Add(new SubmenuButton(MenuDisplayModeEx.Make(mainmenu, pausemenu), id, name, menu, description));
-        }
-        #endregion
-        #endregion
 
         public MenuTree GetItems(MenuDisplayMode mode)
         {
-            MenuTree tree = new MenuTree(this.Id, this.Title);
+            MenuTree tree = new MenuTree(Id, Title);
 
-            tree.AddRange<MenuItem>(this.Where<MenuItem>((item) => {
-                return item.Mode.HasFlag<MenuDisplayMode>(mode);
+            tree.AddRange<MenuItem>(this.Where((item) => {
+                return item.Mode.HasFlag(mode);
             }));
 
             return tree;

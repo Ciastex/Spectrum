@@ -1,17 +1,11 @@
-﻿using Spectrum.API.Gui.UI;
+﻿using Spectrum.API.GUI.Controls;
 using UnityEngine;
 
-namespace Spectrum.API.Gui.Data
+namespace Spectrum.API.GUI.Data
 {
-    class MenuItemInfo : MonoBehaviour
+    public class MenuItemInfo : MonoBehaviour
     {
-        public string Id {
-            get
-            {
-                return this.Item?.Id;
-            }
-        }
-
+        public string Id => Item?.Id;
         public MenuItem Item { get; set; }
     }
 }
