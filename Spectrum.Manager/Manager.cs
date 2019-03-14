@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
+using Harmony;
 using Spectrum.API;
 using Spectrum.API.Configuration;
 using Spectrum.API.Events;
@@ -8,8 +6,13 @@ using Spectrum.API.Interfaces.Plugins;
 using Spectrum.API.Interfaces.Systems;
 using Spectrum.API.IPC;
 using Spectrum.API.Logging;
+using Spectrum.Manager.GUI;
 using Spectrum.Manager.Input;
 using Spectrum.Manager.Runtime;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Spectrum.Manager
 {
@@ -17,10 +20,13 @@ namespace Spectrum.Manager
     {
         private PluginRegistry PluginRegistry { get; set; }
         private PluginLoader PluginLoader { get; set; }
+        private HarmonyInstance HarmonyInstance { get; set; }
         private Logger Log { get; }
 
         public event EventHandler<PluginInitializationEventArgs> PluginInitialized;
+
         public IHotkeyManager Hotkeys { get; set; }
+        public IMenuManager Menus { get; set; }
 
         public bool IsEnabled { get; set; } = true;
         public bool CanLoadPlugins => Directory.Exists(Defaults.ManagerPluginDirectory);
@@ -33,6 +39,9 @@ namespace Spectrum.Manager
             CheckPaths();
             InitializeSettings();
 
+            HarmonyInstance = HarmonyInstance.Create("Spectrum.Manager");
+            HarmonyInstance.PatchAll(AppDomain.CurrentDomain.GetAssemblies().First(asm => asm.GetName().Name == "Spectrum.API"));
+
             if (!Global.Settings.GetItem<bool>("Enabled"))
             {
                 Log.Error("Spectrum is disabled. Set 'Enabled' entry to 'true' in settings to activate plugin functionality.");
@@ -42,6 +51,7 @@ namespace Spectrum.Manager
             }
 
             Hotkeys = new HotkeyManager();
+            Menus = new MenuManager();
 
             LoadExtensions();
             StartExtensions();
