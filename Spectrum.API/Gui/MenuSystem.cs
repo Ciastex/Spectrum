@@ -10,7 +10,7 @@ namespace Spectrum.API.GUI
         public static GameObject MenuBlueprint { get; set; }
         public static MenuTree MenuTree { get; set; }
 
-        static MenuSystem() => MenuTree = new MenuTree("menu.spectrum.main", "SpectrumSettings");
+        static MenuSystem() => MenuTree = new MenuTree("menu.spectrum.main", "Spectrum Settings");
 
         public static void ShowMenu(MenuTree menuTree, SuperMenu parentMenu, int pageIndex)
         {
