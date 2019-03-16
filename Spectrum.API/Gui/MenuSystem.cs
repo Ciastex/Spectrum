@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace Spectrum.API.GUI
 {
-    public static class MenuSystem
+    internal static class MenuSystem
     {
         public static GameObject MenuBlueprint { get; set; }
         public static MenuTree MenuTree { get; set; }
