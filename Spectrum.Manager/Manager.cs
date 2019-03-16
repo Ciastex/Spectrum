@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Events;
-using Events.ChatLog;
 using Events.ClientToAllClients;
 using Harmony;
 using Spectrum.API;

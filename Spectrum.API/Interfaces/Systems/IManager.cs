@@ -12,7 +12,6 @@ namespace Spectrum.API.Interfaces.Systems
         IHotkeyManager Hotkeys { get; }
         IEventRouter EventRouter { get; }
         ICheatSystem CheatSystem { get; }
-
         IMenuManager Menus { get; }
         
         void SendIPC(string ipcIdentifier, IPCData data);

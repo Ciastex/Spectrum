@@ -70,7 +70,6 @@
     <Compile Include="Exceptions\MetadataReadException.cs" />
     <Compile Include="Exceptions\SettingsException.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
-    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="GUI\Data\MenuItemInfo.cs" />
     <Compile Include="GUI\Data\MenuTree.cs" />
     <Compile Include="GUI\MenuSystem.cs" />
@@ -92,8 +91,6 @@
     <Compile Include="Network\Events\ClientToServer.cs" />
     <Compile Include="Network\Events\ServerToClient.cs" />
     <Compile Include="Network\NetworkOverrides.cs" />
-    <Compile Include="Reflection\MemberMetadata.cs" />
-    <Compile Include="Reflection\MethodMetadata.cs" />
     <Compile Include="Security\CheatStateInfo.cs" />
     <Compile Include="Security\CheatSystem.cs" />
     <Compile Include="RuntimePatches\GUI\GeneralMenuSpectrumInitializationPatch.cs" />

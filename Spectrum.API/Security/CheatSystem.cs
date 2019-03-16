@@ -7,7 +7,6 @@ using Spectrum.API.Extensions;
 using Spectrum.API.Interfaces.Systems;
 using Spectrum.API.Network;
 using Spectrum.API.Network.Events;
-using Spectrum.API.Reflection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -76,12 +75,7 @@ namespace Spectrum.API.Security
 
         private void OnSceneLoadFinished(LoadFinish.Data data)
         {
-            G.Sys.CheatsManager_.SetPrivateMember(new MemberMetadata
-            {
-                IsProperty = false,
-                IsStatic = false,
-                MemberName = "anyGameplayCheatsUsedThisLevel_"
-            }, AnyCheatsEnabled);
+            G.Sys.CheatsManager_.anyGameplayCheatsUsedThisLevel_ = AnyCheatsEnabled;
         }
 
         private void OnClientConnected(ClientConnected.Data data)
