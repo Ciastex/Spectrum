@@ -61,12 +61,12 @@
     <Compile Include="Events\EventArgs\CheatStateFailureEventArgs.cs" />
     <Compile Include="Events\EventArgs\CheatStateInfoEventArgs.cs" />
     <Compile Include="Events\EventArgs\PluginInitializationEventArgs.cs" />
+    <Compile Include="Interfaces\Systems\ICheatSystem.cs" />
     <Compile Include="Interfaces\Systems\IEventRouter.cs" />
     <Compile Include="Network\EventNames.cs" />
     <Compile Include="Network\EventRouter.cs" />
     <Compile Include="Network\Events\BroadcastAll.cs" />
     <Compile Include="Events\GUI\MenuOpenedEvent.cs" />
-    <Compile Include="Events\PluginInitializationEventArgs.cs" />
     <Compile Include="Exceptions\MetadataReadException.cs" />
     <Compile Include="Exceptions\SettingsException.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
