@@ -16,7 +16,7 @@ namespace Spectrum.API.Configuration
         private string RootDirectory { get; }
         private string SettingsDirectory => Path.Combine(RootDirectory, Defaults.PrivateSettingsDirectory);
         private string FilePath => Path.Combine(SettingsDirectory, FileName);
-        public event Action<FileSystemEventArgs> OnChanged;
+        public event Action<Settings, FileSystemEventArgs> OnChanged;
         
         public Settings(string fileName)
         {
@@ -83,7 +83,7 @@ namespace Spectrum.API.Configuration
         
         private void OnFileChanged(object source, FileSystemEventArgs e)
         {
-            OnChanged(e);
+            OnChanged(this, e);
         }
 
         public void Save(bool formatJson = true)
