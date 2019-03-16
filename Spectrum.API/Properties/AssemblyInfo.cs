@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("a9cfd86d-1604-4c80-b02b-e60ad98ba86f")]
-
+[assembly: InternalsVisibleTo("Spectrum.Manager")]
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version

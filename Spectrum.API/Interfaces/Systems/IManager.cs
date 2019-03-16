@@ -1,4 +1,4 @@
-﻿using Spectrum.API.Events;
+﻿using Spectrum.API.Events.EventArgs;
 using Spectrum.API.IPC;
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,9 @@ namespace Spectrum.API.Interfaces.Systems
         event EventHandler<PluginInitializationEventArgs> PluginInitialized;
 
         IHotkeyManager Hotkeys { get; }
+        IEventRouter EventRouter { get; }
+        ICheatSystem CheatSystem { get; }
+
         IMenuManager Menus { get; }
         
         void SendIPC(string ipcIdentifier, IPCData data);

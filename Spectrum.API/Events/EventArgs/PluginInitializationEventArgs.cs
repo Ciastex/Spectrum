@@ -1,9 +1,8 @@
 ﻿using Spectrum.API.IPC;
-using System;
 
-namespace Spectrum.API.Events
+namespace Spectrum.API.Events.EventArgs
 {
-    public class PluginInitializationEventArgs : EventArgs
+    public class PluginInitializationEventArgs : System.EventArgs
     {
         public PluginInfo Plugin { get; }
         public bool Last { get; }
