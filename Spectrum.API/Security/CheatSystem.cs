@@ -3,7 +3,6 @@ using Events.Network;
 using Events.Scene;
 using Newtonsoft.Json;
 using Spectrum.API.Events.EventArgs;
-using Spectrum.API.Extensions;
 using Spectrum.API.Interfaces.Systems;
 using Spectrum.API.Network;
 using Spectrum.API.Network.Events;
@@ -112,6 +111,8 @@ namespace Spectrum.API.Security
             }
             catch (Exception e)
             {
+                Logger.Error("Failed to process the received cheat info data.");
+                Logger.Exception(e);
                 CheatStateInfoFailure?.Invoke(this, new CheatStateFailureEventArgs(sender, e, json));
             }
         }
