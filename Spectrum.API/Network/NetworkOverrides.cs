@@ -2,7 +2,7 @@
 
 namespace Spectrum.API.Network
 {
-    public static class NetworkOverrides
+    internal static class NetworkOverrides
     {
         internal static void RegisterServerToClientEvent<T>() where T : struct, IBitSerializable, INetworkGrouped
         {

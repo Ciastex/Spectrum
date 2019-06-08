@@ -1,14 +1,10 @@
 ﻿using Harmony;
 using Spectrum.API.GUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Spectrum.API.RuntimePatches.GUI
 {
     [HarmonyPatch(typeof(GeneralMenu), "InitializeVirtual")]
-    public class GeneralMenuSpectrumInitializationPatch
+    internal class GeneralMenuSpectrumInitializationPatch
     {
         static void Postfix(GeneralMenu __instance)
         {
