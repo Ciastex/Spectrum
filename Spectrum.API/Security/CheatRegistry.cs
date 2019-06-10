@@ -1,17 +1,12 @@
 ﻿using Events;
-using Events.Network;
 using Events.Scene;
-using Newtonsoft.Json;
-using Spectrum.API.Events.EventArgs;
 using Spectrum.API.Interfaces.Systems;
-using Spectrum.API.Network;
-using Spectrum.API.Network.Events;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Logger = Spectrum.API.Logging.Logger;
 
 namespace Spectrum.API.Security
 {
@@ -20,7 +15,7 @@ namespace Spectrum.API.Security
         private readonly Dictionary<Assembly, List<string>> _cheatStates;
         private readonly SubscriberList _subscriberList;
 
-        private Logging.Logger Logger { get; }
+        private Logger Logger { get; }
         private IManager Manager { get; }
 
         public bool AnyCheatsEnabled => _cheatStates.Values.Any(x => x.Any());
@@ -35,7 +30,7 @@ namespace Spectrum.API.Security
             };
             _subscriberList.Subscribe();
 
-            Logger = new Logging.Logger(Defaults.CheatSystemLogFileName);
+            Logger = new Logger(Defaults.CheatSystemLogFileName) { WriteToConsole = true };
             Manager = manager;
         }
 
@@ -51,6 +46,8 @@ namespace Spectrum.API.Security
                     _cheatStates[callingAssembly].Add(key);
                 else Logger.Warning($"Plugin assembly {Path.GetFileName(callingAssembly.Location)} tried to add cheat key '{key}' more than once.");
             }
+
+            G.Sys.CheatsManager_.anyGameplayCheatsUsedThisLevel_ = AnyCheatsEnabled;
         }
 
         public void Disable(string key)
