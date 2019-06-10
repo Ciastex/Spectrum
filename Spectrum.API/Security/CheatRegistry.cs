@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
 using Logger = Spectrum.API.Logging.Logger;
 
 namespace Spectrum.API.Security
@@ -60,6 +59,16 @@ namespace Spectrum.API.Security
                     _cheatStates[callingAssembly].Remove(key);
                 else Logger.Warning($"Plugin assembly {Path.GetFileName(callingAssembly.Location)} tried to remove non-existent cheat key '{key}'.");
             }
+        }
+
+        public bool IsCheatEnabled(string key)
+        {
+            var callingAssembly = Assembly.GetCallingAssembly();
+
+            if (_cheatStates.ContainsKey(callingAssembly))
+                return _cheatStates[callingAssembly].Contains(key);
+
+            return false;
         }
 
         private void OnSceneLoadFinished(LoadFinish.Data data)
