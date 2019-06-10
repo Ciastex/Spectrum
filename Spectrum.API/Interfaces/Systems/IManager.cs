@@ -10,9 +10,10 @@ namespace Spectrum.API.Interfaces.Systems
         event EventHandler<PluginInitializationEventArgs> PluginInitialized;
 
         IHotkeyManager Hotkeys { get; }
-        IEventRouter EventRouter { get; }
-        ICheatSystem CheatSystem { get; }
         IMenuManager Menus { get; }
+
+        IEventRouter EventRouter { get; }
+        ICheatRegistry CheatRegistry { get; }
         
         void SendIPC(string ipcIdentifier, IPCData data);
         bool IsAvailableForIPC(string ipcIdentifier);

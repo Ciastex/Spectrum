@@ -25,5 +25,7 @@ namespace Spectrum.API
         public const string RuntimeAssetLoaderLogFileName = "RuntimeAssetLoader";
         public const string SettingsSystemLogFileName = "SettingsSystem";
         public const string ManagerLogFileName = "Manager";
+        public const string EventRouterLogFileName = "EventRouter";
+        public const string CheatSystemLogFileName = "CheatSystem";
     }
 }

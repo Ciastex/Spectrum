@@ -30,9 +30,10 @@ namespace Spectrum.Manager
 
         public event EventHandler<PluginInitializationEventArgs> PluginInitialized;
         public IHotkeyManager Hotkeys { get; }
+        public IMenuManager Menus { get; }
+
         public IEventRouter EventRouter { get; }
-        public ICheatSystem CheatSystem { get; }
-        public IMenuManager Menus { get; set; }
+        public ICheatRegistry CheatRegistry { get; }
 
         public bool IsEnabled { get; set; } = true;
         public bool CanLoadPlugins => Directory.Exists(Defaults.ManagerPluginDirectory);
@@ -58,41 +59,11 @@ namespace Spectrum.Manager
 
             InitializeNetworkOverrides();
 
-            EventRouter = new EventRouter();
+            EventRouter = new EventRouter(this);
+            CheatRegistry = new CheatRegistry(this);
+
             Hotkeys = new HotkeyManager();
             Menus = new MenuManager();
-
-            CheatSystem = new CheatSystem(this);
-
-            CheatSystem.CheatStateInfoReceived += (sender, args) =>
-            {
-                if (!G.Sys.NetworkingManager_.IsServer_) return;
-
-
-                if (args.CheatStateInfo.AnyCheatsEnabled)
-                {
-                    if (!Global.Settings.GetItem<bool>("AllowCheatsOnline"))
-                    {
-#pragma warning disable 618
-                        StaticTransceivedEvent<ChatMessage.Data>.Broadcast(new ChatMessage.Data("[FF44FF]Player disconnected due to cheats not being allowed in this game.[-]"));
-#pragma warning restore 618
-                        UnityEngine.Network.CloseConnection(args.Sender, true);
-                    }
-                }
-            };
-
-            CheatSystem.CheatStateInfoFailure += (sender, args) =>
-            {
-                if (!G.Sys.NetworkingManager_.IsServer_) return;
-
-                if (Global.Settings.GetItem<bool>("KickCheatRequestFailures"))
-                {
-#pragma warning disable 618
-                    StaticTransceivedEvent<ChatMessage.Data>.Broadcast(new ChatMessage.Data("[FF44FF]Player disconnected because of cheat state verification failure.[-]"));
-#pragma warning restore 618
-                    UnityEngine.Network.CloseConnection(args.Sender, true);
-                }
-            };
 
             LoadExtensions();
             StartExtensions();
@@ -206,8 +177,7 @@ namespace Spectrum.Manager
 
                 Global.Settings.GetOrCreate("LogToConsole", true);
                 Global.Settings.GetOrCreate("Enabled", true);
-                Global.Settings.GetOrCreate("AllowCheatsOnline", false);
-                Global.Settings.GetOrCreate("KickCheatRequestFailures", true);
+                Global.Settings.GetOrCreate("NetworkDebugging", false);
 
                 if (Global.Settings.Dirty)
                     Global.Settings.Save();

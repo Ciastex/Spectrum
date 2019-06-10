@@ -61,9 +61,8 @@
     <Compile Include="Events\EventArgs\CheatStateFailureEventArgs.cs" />
     <Compile Include="Events\EventArgs\CheatStateInfoEventArgs.cs" />
     <Compile Include="Events\EventArgs\PluginInitializationEventArgs.cs" />
-    <Compile Include="Interfaces\Systems\ICheatSystem.cs" />
+    <Compile Include="Interfaces\Systems\ICheatRegistry.cs" />
     <Compile Include="Interfaces\Systems\IEventRouter.cs" />
-    <Compile Include="Network\EventNames.cs" />
     <Compile Include="Network\EventRouter.cs" />
     <Compile Include="Network\Events\BroadcastAll.cs" />
     <Compile Include="Events\GUI\MenuOpenedEvent.cs" />
@@ -92,7 +91,7 @@
     <Compile Include="Network\Events\ServerToClient.cs" />
     <Compile Include="Network\NetworkOverrides.cs" />
     <Compile Include="Security\CheatStateInfo.cs" />
-    <Compile Include="Security\CheatSystem.cs" />
+    <Compile Include="Security\CheatRegistry.cs" />
     <Compile Include="RuntimePatches\GUI\GeneralMenuSpectrumInitializationPatch.cs" />
     <Compile Include="Storage\Assets.cs" />
     <Compile Include="Storage\FileSystem.cs" />

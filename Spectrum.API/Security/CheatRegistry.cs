@@ -15,7 +15,7 @@ using UnityEngine;
 
 namespace Spectrum.API.Security
 {
-    internal class CheatSystem : ICheatSystem
+    internal class CheatRegistry : ICheatRegistry
     {
         private readonly Dictionary<Assembly, List<string>> _cheatStates;
         private readonly SubscriberList _subscriberList;
@@ -25,25 +25,18 @@ namespace Spectrum.API.Security
 
         public bool AnyCheatsEnabled => _cheatStates.Values.Any(x => x.Any());
 
-        public event EventHandler<CheatStateInfoEventArgs> CheatStateInfoReceived;
-        public event EventHandler<CheatStateFailureEventArgs> CheatStateInfoFailure;
-
-        internal CheatSystem(IManager manager)
+        internal CheatRegistry(IManager manager)
         {
             _cheatStates = new Dictionary<Assembly, List<string>>();
 
             _subscriberList = new SubscriberList
             {
                 new StaticEvent<LoadFinish.Data>.Subscriber(OnSceneLoadFinished),
-                new StaticEvent<ClientConnected.Data>.Subscriber(OnClientConnected)
             };
             _subscriberList.Subscribe();
 
-            Logger = new Logging.Logger("cheatsystem.log");
-
+            Logger = new Logging.Logger(Defaults.CheatSystemLogFileName);
             Manager = manager;
-            manager.EventRouter.RegisterServerToClientCallback(EventNames.CheatStateInfoRequest, OnCheatStateInfoRequested);
-            manager.EventRouter.RegisterClientToServerCallback(EventNames.CheatStateInfoResponse, OnCheatStateInfoReceived);
         }
 
         public void Enable(string key)
@@ -75,46 +68,6 @@ namespace Spectrum.API.Security
         private void OnSceneLoadFinished(LoadFinish.Data data)
         {
             G.Sys.CheatsManager_.anyGameplayCheatsUsedThisLevel_ = AnyCheatsEnabled;
-        }
-
-        private void OnClientConnected(ClientConnected.Data data)
-        {
-            StaticTargetedEvent<ServerToClient.Data>.Broadcast(
-                data.player_,
-                new ServerToClient.Data(
-                    EventNames.CheatStateInfoRequest,
-                    string.Empty
-                )
-            );
-        }
-
-        private void OnCheatStateInfoRequested(NetworkPlayer sender, string json)
-        {
-#pragma warning disable 0618
-            StaticTransceivedEvent<ClientToServer.Data>.Broadcast(
-#pragma warning restore 0618
-                new ClientToServer.Data(
-                    EventNames.CheatStateInfoResponse,
-                    JsonConvert.SerializeObject(new CheatStateInfo(AnyCheatsEnabled))
-                )
-            );
-        }
-
-        private void OnCheatStateInfoReceived(NetworkPlayer sender, string json)
-        {
-            if (sender == UnityEngine.Network.player) return;
-
-            try
-            {
-                var info = JsonConvert.DeserializeObject<CheatStateInfo>(json);
-                CheatStateInfoReceived?.Invoke(this, new CheatStateInfoEventArgs(info, sender));
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Failed to process the received cheat info data.");
-                Logger.Exception(e);
-                CheatStateInfoFailure?.Invoke(this, new CheatStateFailureEventArgs(sender, e, json));
-            }
         }
     }
 }
