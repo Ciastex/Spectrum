@@ -126,7 +126,9 @@ namespace Spectrum.Resonator.ViewModels
             else
             {
                 _statusBarDataProvider.SetActionInfo("Downloading release package...");
-                var packagePath = await _spectrumInstallerService.DownloadPackage(PickedRelease.Assets.First().BrowserDownloadUrl);
+
+                // TODO: Unsafe assumption that Spectrum.zip exists. Need to handle that.
+                var packagePath = await _spectrumInstallerService.DownloadPackage(PickedRelease.Assets.First(x => x.Name == "Spectrum.zip").BrowserDownloadUrl);
 
                 if (_validatorService.ValidateZipArchive(packagePath, ArchiveValidatorName))
                 {
