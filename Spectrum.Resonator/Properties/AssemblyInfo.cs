@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Spectrum.Resonator")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Automated Spectrum installer.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Spectrum.Resonator")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCopyright("Copyright © 2019 Ciastex")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
