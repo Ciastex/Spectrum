@@ -60,26 +60,26 @@ namespace Spectrum.Resonator.Services
 
         public async Task UninstallSpectrum(string distancePath)
         {
-            await Task.Run(() =>
+            // TODO: Don't hardcode paths, preferably use validator service to retrieve some of this.
+            var additionalPaths = new List<string>
             {
-                // TODO: Don't hardcode paths, preferably use validator service to retrieve some of this.
-                var spectrumPath = Path.Combine(distancePath, "Distance_Data", "Spectrum");
-                var additionalPaths = new List<string>
-                {
-                    Path.Combine(distancePath, "Distance_Data", "Managed", "Spectrum.Bootstrap.dll"),
-                    Path.Combine(distancePath, "Distance_Data", "Managed", "Spectrum.Prism.exe"),
-                    Path.Combine(distancePath, "Distance_Data", "Managed", "Mono.Cecil.dll"),
-                    Path.Combine(distancePath, "Distance_Data", "Managed", "install_linux.sh"),
-                    Path.Combine(distancePath, "Distance_Data", "Managed", "install_windows.bat")
-                };
+                Path.Combine(distancePath, "Distance_Data", "Managed", "Spectrum.Bootstrap.dll"),
+                Path.Combine(distancePath, "Distance_Data", "Managed", "Spectrum.Prism.exe"),
+                Path.Combine(distancePath, "Distance_Data", "Managed", "System.Runtime.Serialization.dll"),
+                Path.Combine(distancePath, "Distance_Data", "Managed", "Mono.Cecil.dll"),
+                Path.Combine(distancePath, "Distance_Data", "Managed", "spectrum_install_windows.bat"),
+                Path.Combine(distancePath, "Distance_Data", "Managed", "spectrum_install_linux.sh"),
+                Path.Combine(distancePath, "Distance_Data", "Spectrum", "Spectrum.API.dll"),
+                Path.Combine(distancePath, "Distance_Data", "Spectrum", "Spectrum.Manager.dll"),
+                Path.Combine(distancePath, "Distance_Data", "Spectrum", "0Harmony.dll"),
+                Path.Combine(distancePath, "Distance_Data", "Spectrum", "Newtonsoft.Json.dll")
+            };
 
-                if (Directory.Exists(spectrumPath))
-                    Directory.Delete(spectrumPath, true);
+            foreach (var path in additionalPaths)
+                if (File.Exists(path))
+                    File.Delete(path);
 
-                foreach (var path in additionalPaths)
-                    if (File.Exists(path))
-                        File.Delete(path);
-            });
+            await Task.CompletedTask;
         }
 
         public string GetRegisteredDistanceInstallationPath()

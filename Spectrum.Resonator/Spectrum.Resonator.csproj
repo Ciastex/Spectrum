@@ -38,8 +38,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Atlas.UI, Version=0.6.32.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Atlas.UI.0.6.32.2\lib\net461\Atlas.UI.dll</HintPath>
+    <Reference Include="Atlas.UI, Version=0.7.3.18863, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Atlas.UI.0.7.4\lib\net461\Atlas.UI.dll</HintPath>
     </Reference>
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
@@ -103,7 +103,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TabViews\SpectrumInstallerView.xaml">
+    <Page Include="Views\GroupViews\SpectrumInstallerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -140,7 +140,7 @@
     <Compile Include="Views\Miscellaneous\StatusBarView.xaml.cs">
       <DependentUpon>StatusBarView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TabViews\SpectrumInstallerView.xaml.cs">
+    <Compile Include="Views\GroupViews\SpectrumInstallerView.xaml.cs">
       <DependentUpon>SpectrumInstallerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Windows\MainWindow.xaml.cs">

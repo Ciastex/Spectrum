@@ -1,4 +1,5 @@
-﻿using DevExpress.Mvvm;
+﻿using Atlas.UI.Enums;
+using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using Octokit;
 using Spectrum.Resonator.Enums;
@@ -8,7 +9,9 @@ using Spectrum.Resonator.Services.Interfaces;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using MessageBox = Atlas.UI.MessageBox;
 
 namespace Spectrum.Resonator.ViewModels
 {
@@ -64,11 +67,15 @@ namespace Spectrum.Resonator.ViewModels
             _validatorService = validatorService;
 
             DistanceInstallationPath = _spectrumInstallerService.GetRegisteredDistanceInstallationPath();
-            DownloadAvailableReleases();
+            Task.Run(async () =>
+            {
+                await DownloadAvailableReleases();
+                GettingLatestRelease = true;
+            });
         }
 
-        [Command]
-        public async void DownloadAvailableReleases()
+        [AsyncCommand]
+        public async Task DownloadAvailableReleases()
         {
             _statusBarDataProvider.SetActionInfo("Downloading release list...");
 
@@ -108,8 +115,8 @@ namespace Spectrum.Resonator.ViewModels
                 LocalPackagePath = path;
         }
 
-        [Command]
-        public async void BeginInstallation(Window owner)
+        [AsyncCommand]
+        public async Task BeginInstallation(Window owner)
         {
             if (InstallingLocalPackage)
             {
@@ -128,19 +135,21 @@ namespace Spectrum.Resonator.ViewModels
                     {
                         _spectrumInstallerService.ExtractPackage(packagePath, DistanceInstallationPath);
                     }
-                    catch (IOException)
+                    catch (IOException e)
                     {
-                        var dialogResult = MessageBox.Show(owner, "Spectrum appears to have been already installed. Reinstall?", "Spectrum already installed", MessageBoxButton.YesNo);
-
-                        if (dialogResult == MessageBoxResult.Yes)
-                            await _spectrumInstallerService.UninstallSpectrum(DistanceInstallationPath);
-                        else
-                        {
-                            _statusBarDataProvider.Reset();
-                            return;
-                        }
-
-                        _spectrumInstallerService.ExtractPackage(packagePath, DistanceInstallationPath);
+                        new MessageBox()
+                            .Titled("Spectrum already installed")
+                            .WithMessage("Spectrum appears to have been already installed. Reinstall?")
+                            .WithButtons(MessageBoxButtons.Yes | MessageBoxButtons.No)
+                            .YesClickExecutes(() =>
+                            {
+                                _spectrumInstallerService.UninstallSpectrum(DistanceInstallationPath).GetAwaiter().GetResult();
+                                _spectrumInstallerService.ExtractPackage(packagePath, DistanceInstallationPath);
+                            })
+                            .NoClickExecutes(() => _statusBarDataProvider.Reset())
+                            .WhenClosedAbnormally(() => _statusBarDataProvider.Reset())
+                            .OwnedBy(owner)
+                            .Show();
                     }
 
                     _statusBarDataProvider.SetActionInfo("Installing Spectrum...");
@@ -148,19 +157,37 @@ namespace Spectrum.Resonator.ViewModels
 
                     if (result != PrismTerminationReason.Default)
                     {
-                        MessageBox.Show(owner, "Installation failed.\nExit code: {(int)result}.\nReason: {result}.", "Error");
-                        return;
+                        new MessageBox()
+                            .Titled("Error")
+                            .WithMessage($"Installation failed.\nExit code: {(int)result}.\nReason: {result}.")
+                            .WithButtons(MessageBoxButtons.Ok)
+                            .OkClickExecutes(() => _statusBarDataProvider.SetActionInfo("Idle - installation failed"))
+                            .WhenClosedAbnormally(() => _statusBarDataProvider.SetActionInfo("Idle - installation failed"))
+                            .OwnedBy(owner)
+                            .Show();
                     }
                 }
                 else
                 {
-                    MessageBox.Show(owner, "The package you are trying to install has failed to validate properly.", "Error");
-                    return;
+                    new MessageBox()
+                        .Titled("Error")
+                        .WithMessage("The package you are trying to install has failed to validate properly.")
+                        .WithButtons(MessageBoxButtons.Ok)
+                        .OkClickExecutes(() => _statusBarDataProvider.SetActionInfo("Idle - installation failed"))
+                        .WhenClosedAbnormally(() => _statusBarDataProvider.SetActionInfo("Idle - installation failed"))
+                        .OwnedBy(owner)
+                        .Show();
                 }
             }
 
-            MessageBox.Show(owner, "Spectrum is now installed.", "Success");
-            _statusBarDataProvider.Reset();
+            new MessageBox()
+                .Titled("Success")
+                .WithMessage("The installation was successful.")
+                .WithButtons(MessageBoxButtons.Ok)
+                .OkClickExecutes(() => _statusBarDataProvider.Reset())
+                .WhenClosedAbnormally(() => _statusBarDataProvider.Reset())
+                .OwnedBy(owner)
+                .Show();
         }
     }
 }

@@ -1,8 +1,7 @@
-﻿<UserControl x:Class="Spectrum.Resonator.Views.TabViews.SpectrumInstallerView"
+﻿<UserControl x:Class="Spectrum.Resonator.Views.GroupViews.SpectrumInstallerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:atlas="clr-namespace:Atlas.UI;assembly=Atlas.UI"
-             xmlns:local="clr-namespace:Spectrum.Resonator.Views.TabViews"
              xmlns:mx="clr-namespace:Spectrum.Resonator.Infrastructure.MarkupExtensions"
              xmlns:vm="clr-namespace:Spectrum.Resonator.ViewModels"
              DataContext="{mx:DataContextSource vm:SpectrumInstallerViewModel}">
@@ -34,7 +33,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Distance installation path" />
+            <TextBlock Foreground="White" Text="Distance installation path" />
             <atlas:TextBox Grid.Row="1"
                            Height="26"
                            Margin="0,0,4,0"
@@ -68,7 +67,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Spectrum release" />
+            <TextBlock Foreground="White" Text="Spectrum release" />
 
             <atlas:ComboBox Grid.Row="1"
                             Grid.Column="0"
@@ -84,6 +83,7 @@
                             <TextBlock Padding="2,4"
                                        HorizontalAlignment="Left"
                                        VerticalAlignment="Center"
+                                       Foreground="White"
                                        Text="{Binding TagName, StringFormat='{}Spectrum {0}'}" />
                         </Grid>
                     </DataTemplate>
@@ -114,7 +114,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Local Spectrum package path" />
+            <TextBlock Foreground="White" Text="Local Spectrum package path" />
 
             <atlas:TextBox Grid.Row="1"
                            Grid.Column="0"

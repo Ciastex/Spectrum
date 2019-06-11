@@ -8,6 +8,7 @@
         <TextBlock Margin="4,0,10,0"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center"
+                   Foreground="White"
                    Text="{Binding ActionInfo, TargetNullValue='Idle', UpdateSourceTrigger=PropertyChanged}" />
     </Grid>
 </UserControl>
