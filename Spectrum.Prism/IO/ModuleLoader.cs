@@ -1,5 +1,6 @@
 ﻿using System;
 using Mono.Cecil;
+using Spectrum.Prism.Enums;
 
 namespace Spectrum.Prism.IO
 {
@@ -14,7 +15,7 @@ namespace Spectrum.Prism.IO
             }
             catch (Exception e)
             {
-                ErrorHandler.TerminateWithError($"Couldn't load TARGET module definition. Exception details:\n{e}");
+                ErrorHandler.TerminateWithError($"Couldn't load TARGET module definition. Exception details:\n{e}", TerminationReason.TargetModuleLoadFailed);
             }
             return null;
         }
@@ -28,7 +29,7 @@ namespace Spectrum.Prism.IO
             }
             catch (Exception e)
             {
-                ErrorHandler.TerminateWithError($"Could't load BOOTSTRAP module definition. Exception details:\n{e}");
+                ErrorHandler.TerminateWithError($"Could't load BOOTSTRAP module definition. Exception details:\n{e}", TerminationReason.BootstrapModuleLoadFailed);
             }
             return null;
         }

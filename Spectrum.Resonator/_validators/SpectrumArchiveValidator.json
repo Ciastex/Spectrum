@@ -1,0 +1,14 @@
+﻿{
+  "validatorName": "Spectrum Archive Validator",
+  "requiredFiles": [
+    "Managed/spectrum_install_windows.bat",
+    "Managed/Mono.Cecil.dll",
+    "Managed/Spectrum.Bootstrap.dll",
+    "Managed/Spectrum.Prism.exe",
+    "Managed/System.Runtime.Serialization.dll",
+    "Spectrum/Spectrum.Manager.dll",
+    "Spectrum/Spectrum.API.dll",
+    "Spectrum/0Harmony.dll",
+    "Spectrum/Newtonsoft.Json.dll"
+  ]
+}

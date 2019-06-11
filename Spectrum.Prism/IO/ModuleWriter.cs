@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil;
+using Spectrum.Prism.Enums;
 
 namespace Spectrum.Prism.IO
 {
@@ -12,11 +13,11 @@ namespace Spectrum.Prism.IO
             }
             catch (AssemblyResolutionException)
             {
-                ErrorHandler.TerminateWithError("Can't find the required dependencies. Make sure you run Prism inside the 'Managed' directory.");
+                ErrorHandler.TerminateWithError("Can't find the required dependencies. Make sure you run Prism inside the 'Managed' directory.", TerminationReason.RequiredDependenciesMissing);
             }
             catch
             {
-                ErrorHandler.TerminateWithError("Can't write back the modified assembly. Is it in use and/or you don't have write rights?");
+                ErrorHandler.TerminateWithError("Can't write back the modified assembly. Is it in use and/or you don't have write rights?", TerminationReason.AssemblySaveFailed);
             }
         }
     }

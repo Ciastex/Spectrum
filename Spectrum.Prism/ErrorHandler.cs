@@ -1,14 +1,15 @@
 ﻿using System;
+using Spectrum.Prism.Enums;
 using Spectrum.Prism.IO;
 
 namespace Spectrum.Prism
 {
-    class ErrorHandler
+    internal class ErrorHandler
     {
-        public static void TerminateWithError(string message)
+        public static void TerminateWithError(string message, TerminationReason reason = 0)
         {
             ColoredOutput.WriteError(message);
-            Environment.Exit(0);
+            Environment.Exit((int)reason);
         }
     }
 }

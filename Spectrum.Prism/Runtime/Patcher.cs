@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Mono.Cecil;
+using Spectrum.Prism.Enums;
 using Spectrum.Prism.IO;
 
 namespace Spectrum.Prism.Runtime
@@ -26,7 +27,7 @@ namespace Spectrum.Prism.Runtime
 
             patch.PatchFailed += (sender, args) =>
             {
-                ErrorHandler.TerminateWithError($"Patch '{args.Name}' failed. Reason: {args.Exception.Message}");
+                ErrorHandler.TerminateWithError($"Patch '{args.Name}' failed. Reason: {args.Exception.Message}", TerminationReason.PatchFailure);
             };
 
             patch.PatchSucceeded += (sender, args) =>
@@ -60,7 +61,7 @@ namespace Spectrum.Prism.Runtime
                     return;
                 }
             }
-            ErrorHandler.TerminateWithError($"No patch '{name}' exists.");
+            ErrorHandler.TerminateWithError($"No patch '{name}' exists.", TerminationReason.PatchNotFound);
         }
 
         private void RunPatch(IPatch patch)

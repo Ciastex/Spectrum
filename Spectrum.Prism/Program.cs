@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Mono.Cecil;
+using Spectrum.Prism.Enums;
 using Spectrum.Prism.IO;
 using Spectrum.Prism.Patches;
 using Spectrum.Prism.Runtime;
@@ -32,23 +33,23 @@ namespace Spectrum.Prism
                 ColoredOutput.WriteInformation("    -t [--target]+: Specify the target Distance DLL you want to patch.");
                 ColoredOutput.WriteInformation("    -s [--source]+: Specify the source DLL you want to cross-reference.");
                 ColoredOutput.WriteInformation("    -p [--patch]+:  Run only patch with the specified name.");
-                ErrorHandler.TerminateWithError("Invalid syntax provided.");
+                ErrorHandler.TerminateWithError("Invalid syntax provided.", TerminationReason.InvalidSyntax);
             }
 
             ParseArguments(args);
 
             if (string.IsNullOrEmpty(_distanceAssemblyFilename))
-                ErrorHandler.TerminateWithError("Target DLL name not specified.");
+                ErrorHandler.TerminateWithError("Target DLL name not specified.", TerminationReason.TargetDllNotProvided);
             if ((args.Contains("-p") || args.Contains("--patch")) && string.IsNullOrEmpty(_requestedPatchName))
-                ErrorHandler.TerminateWithError("Patch name not specified.");
+                ErrorHandler.TerminateWithError("Patch name not specified.", TerminationReason.PatchNameNotProvided);
             if ((args.Contains("-s") || args.Contains("--source")) && string.IsNullOrEmpty(_bootstrapAssemblyFilename))
-                ErrorHandler.TerminateWithError("Source DLL name not specified.");
+                ErrorHandler.TerminateWithError("Source DLL name not specified.", TerminationReason.SourceDllNotProvided);
 
             if (!DistanceFileExists())
-                ErrorHandler.TerminateWithError("Specified TARGET DLL not found.");
+                ErrorHandler.TerminateWithError("Specified TARGET DLL not found.", TerminationReason.TargetDllNonexistant);
 
             if (!BootstrapFileExists() && (args.Contains("-s") || args.Contains("--source")))
-                ErrorHandler.TerminateWithError("Specified SOURCE DLL not found.");
+                ErrorHandler.TerminateWithError("Specified SOURCE DLL not found.", TerminationReason.SourceDllNonexistant);
 
             CreateBackup();
             PreparePatches();

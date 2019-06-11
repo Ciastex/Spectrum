@@ -1,0 +1,167 @@
+﻿<UserControl x:Class="Spectrum.Resonator.Views.GroupViews.SpectrumInstallerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atlas="clr-namespace:Atlas.UI;assembly=Atlas.UI"
+             xmlns:mx="clr-namespace:Spectrum.Resonator.Infrastructure.MarkupExtensions"
+             xmlns:vm="clr-namespace:Spectrum.Resonator.ViewModels"
+             DataContext="{mx:DataContextSource vm:SpectrumInstallerViewModel}">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="26" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Foreground="White" Text="Distance installation path" />
+            <atlas:TextBox Grid.Row="1"
+                           Height="26"
+                           Margin="0,0,4,0"
+                           Placeholder="Provide Distance installation directory..."
+                           ShowPlaceholder="True"
+                           Text="{Binding DistanceInstallationPath}" />
+
+            <atlas:Button Grid.Row="1"
+                          Grid.Column="1"
+                          Margin="0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Top"
+                          Command="{Binding BrowseForDistanceInstallationCommand}"
+                          CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type atlas:Window}}}"
+                          Content="Browse" />
+        </Grid>
+
+        <Grid Grid.Row="1"
+              Grid.ColumnSpan="2"
+              Margin="0,4,0,0"
+              IsEnabled="{DXBinding '!@e(LatestReleaseCheckBox).IsChecked'}"
+              Visibility="{DXBinding '!InstallingLocalPackage',
+                                     Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Foreground="White" Text="Spectrum release" />
+
+            <atlas:ComboBox Grid.Row="1"
+                            Grid.Column="0"
+                            Height="26"
+                            Margin="0,0,4,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top"
+                            ItemsSource="{Binding AvailableReleases, UpdateSourceTrigger=PropertyChanged}"
+                            SelectedItem="{Binding PickedRelease, UpdateSourceTrigger=PropertyChanged}">
+                <atlas:ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <TextBlock Padding="2,4"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       Foreground="White"
+                                       Text="{Binding TagName, StringFormat='{}Spectrum {0}'}" />
+                        </Grid>
+                    </DataTemplate>
+                </atlas:ComboBox.ItemTemplate>
+            </atlas:ComboBox>
+
+            <atlas:Button Grid.Row="1"
+                          Grid.Column="1"
+                          Margin="0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Top"
+                          Command="{Binding DownloadAvailableReleasesCommand}"
+                          Content="Refresh" />
+        </Grid>
+
+        <Grid Grid.Row="1"
+              Grid.ColumnSpan="2"
+              Margin="0,4,0,0"
+              Visibility="{DXBinding 'InstallingLocalPackage',
+                                     Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Foreground="White" Text="Local Spectrum package path" />
+
+            <atlas:TextBox Grid.Row="1"
+                           Grid.Column="0"
+                           Height="26"
+                           Margin="0,0,4,0"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Top"
+                           Placeholder="Provide Spectrum package path..."
+                           ShowPlaceholder="True"
+                           Text="{Binding LocalPackagePath}" />
+
+            <atlas:Button Grid.Row="1"
+                          Grid.Column="1"
+                          Margin="0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Top"
+                          Command="{Binding BrowseForLocalPackageCommand}"
+                          CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type atlas:Window}}}"
+                          Content="Browse" />
+        </Grid>
+
+        <atlas:CheckBox x:Name="LatestReleaseCheckBox"
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Margin="0,4,0,0"
+                        Padding="4,0,0,0"
+                        Content="Get latest release"
+                        IsChecked="{Binding GettingLatestRelease}"
+                        Visibility="{DXBinding '!InstallingLocalPackage',
+                                               Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+        <atlas:Toggle Grid.Row="2"
+                      Grid.ColumnSpan="2"
+                      Margin="0,4,0,0"
+                      HorizontalAlignment="Right"
+                      HorizontalContentAlignment="Right"
+                      Content="Install local package"
+                      IsChecked="{Binding InstallingLocalPackage}"
+                      ToggledStateText="YES"
+                      UntoggledStateText="NO" />
+
+        <atlas:Button Grid.Row="3"
+                      Margin="0,8,0,0"
+                      HorizontalAlignment="Right"
+                      Command="{Binding BeginInstallationCommand}"
+                      CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type atlas:Window}}}"
+                      Content="Begin installation"
+                      IsEnabled="{Binding IsInstallationPossible}" />
+    </Grid>
+</UserControl>

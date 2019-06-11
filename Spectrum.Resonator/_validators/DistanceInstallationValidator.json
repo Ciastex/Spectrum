@@ -1,0 +1,9 @@
+﻿{
+  "validatorName": "Distance Installation Validator",
+  "requiredFiles": [
+    "Distance_Data\\Managed\\Assembly-CSharp.dll",
+    "Distance_Data\\Managed\\Assembly-CSharp-firstpass.dll",
+    "Distance_Data\\Managed\\UnityEngine.dll",
+    "Distance.exe"
+  ]
+}
