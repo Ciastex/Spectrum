@@ -1,15 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
+using Events;
+using Events.ClientToAllClients;
+using Harmony;
 using Spectrum.API;
 using Spectrum.API.Configuration;
-using Spectrum.API.Events;
+using Spectrum.API.Events.EventArgs;
 using Spectrum.API.Interfaces.Plugins;
 using Spectrum.API.Interfaces.Systems;
 using Spectrum.API.IPC;
 using Spectrum.API.Logging;
+using Spectrum.API.Network;
+using Spectrum.API.Network.Events;
+using Spectrum.API.Security;
+using Spectrum.Manager.GUI;
 using Spectrum.Manager.Input;
 using Spectrum.Manager.Runtime;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Spectrum.Manager
 {
@@ -17,10 +25,15 @@ namespace Spectrum.Manager
     {
         private PluginRegistry PluginRegistry { get; set; }
         private PluginLoader PluginLoader { get; set; }
+        private HarmonyInstance HarmonyInstance { get; set; }
         private Logger Log { get; }
 
         public event EventHandler<PluginInitializationEventArgs> PluginInitialized;
-        public IHotkeyManager Hotkeys { get; set; }
+        public IHotkeyManager Hotkeys { get; }
+        public IMenuManager Menus { get; }
+
+        public IEventRouter EventRouter { get; }
+        public ICheatRegistry CheatRegistry { get; }
 
         public bool IsEnabled { get; set; } = true;
         public bool CanLoadPlugins => Directory.Exists(Defaults.ManagerPluginDirectory);
@@ -33,6 +46,9 @@ namespace Spectrum.Manager
             CheckPaths();
             InitializeSettings();
 
+            HarmonyInstance = HarmonyInstance.Create("Spectrum.Manager");
+            HarmonyInstance.PatchAll(AppDomain.CurrentDomain.GetAssemblies().First(asm => asm.GetName().Name == "Spectrum.API"));
+
             if (!Global.Settings.GetItem<bool>("Enabled"))
             {
                 Log.Error("Spectrum is disabled. Set 'Enabled' entry to 'true' in settings to activate plugin functionality.");
@@ -41,10 +57,26 @@ namespace Spectrum.Manager
                 return;
             }
 
+            InitializeNetworkOverrides();
+
+            EventRouter = new EventRouter(this);
+            CheatRegistry = new CheatRegistry(this);
+
             Hotkeys = new HotkeyManager();
+            Menus = new MenuManager();
 
             LoadExtensions();
             StartExtensions();
+        }
+
+        private void InitializeNetworkOverrides()
+        {
+            Log.Info("Initializing network overrides...");
+
+            NetworkOverrides.RegisterBroadcastAllEvent<BroadcastAll.Data>();
+            NetworkOverrides.RegisterClientToServerEvent<ClientToServer.Data>();
+            NetworkOverrides.RegisterServerToClientEvent<ServerToClient.Data>();
+            NetworkOverrides.RegisterTargetedEvent<ServerToClient.Data>();
         }
 
         public void SendIPC(string ipcIdentifierTo, IPCData data)
@@ -145,6 +177,7 @@ namespace Spectrum.Manager
 
                 Global.Settings.GetOrCreate("LogToConsole", true);
                 Global.Settings.GetOrCreate("Enabled", true);
+                Global.Settings.GetOrCreate("NetworkDebugging", false);
 
                 if (Global.Settings.Dirty)
                     Global.Settings.Save();

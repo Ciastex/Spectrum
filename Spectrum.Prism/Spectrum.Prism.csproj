@@ -42,6 +42,7 @@
     <Compile Include="Enums\TerminationReason.cs" />
     <Compile Include="IO\ColoredOutput.cs" />
     <Compile Include="IO\ModuleWriter.cs" />
+    <Compile Include="Patches\DecapsulationPatch.cs" />
     <Compile Include="Patches\SpectrumUpdateCodePatch.cs" />
     <Compile Include="Runtime\BasePatch.cs" />
     <Compile Include="Runtime\EventArgs\PatchFailedEventArgs.cs" />

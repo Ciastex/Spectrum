@@ -32,6 +32,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Assembly-CSharp, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Spectrum.Dependencies\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.1.2.0.1\lib\net35\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Spectrum.Dependencies\Newtonsoft.Json.dll</HintPath>
@@ -40,10 +47,15 @@
     <Reference Include="System.Runtime.Serialization">
       <Private>True</Private>
     </Reference>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Spectrum.Dependencies\UnityEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.cs" />
     <Compile Include="Input\HotkeyManager.cs" />
+    <Compile Include="GUI\MenuManager.cs" />
     <Compile Include="Runtime\Metadata\ManifestValidationFlags.cs" />
     <Compile Include="Runtime\Metadata\PluginLoadData.cs" />
     <Compile Include="Runtime\Metadata\PluginManifest.cs" />
@@ -58,6 +70,9 @@
       <Project>{a9cfd86d-1604-4c80-b02b-e60ad98ba86f}</Project>
       <Name>Spectrum.API</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

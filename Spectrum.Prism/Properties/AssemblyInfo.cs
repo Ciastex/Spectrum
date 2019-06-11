@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Prism Installer for Spectrum")]
-[assembly: AssemblyDescription("Spectrum Developers")]
+[assembly: AssemblyTitle("Spectrum.Prism")]
+[assembly: AssemblyDescription("Patches Distance assemblies so Spectrum can run.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Spectrum Developers")]
 [assembly: AssemblyProduct("")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
