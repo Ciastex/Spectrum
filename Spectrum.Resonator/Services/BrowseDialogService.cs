@@ -13,7 +13,7 @@ namespace Spectrum.Resonator.Services
                 Title = settings.Title,
                 IsFolderPicker = settings.IsFolderPicker,
                 Multiselect = false,
-                ShowPlacesList = false,
+                ShowPlacesList = true,
                 AllowNonFileSystemItems = false,
                 EnsurePathExists = true
             };
