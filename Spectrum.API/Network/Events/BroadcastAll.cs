@@ -8,24 +8,25 @@ namespace Spectrum.API.Network.Events
         public struct Data : IBitSerializable, INetworkGrouped
         {
             public string EventName;
-            public string EventData;
-            public NetworkPlayer Sender;
+            public byte[] EventData;
 
+            public NetworkPlayer Sender;
             public NetworkGroup NetworkGroup_ { get; }
 
-            public Data(string eventName, string eventData)
+            public Data(string eventName, byte[] eventData)
             {
                 EventName = eventName;
                 EventData = eventData;
-                Sender = UnityEngine.Network.player;
 
+                Sender = UnityEngine.Network.player;
                 NetworkGroup_ = NetworkGroup.GlobalGroup;
             }
 
             void IBitSerializable.Serialize(BitStreamAbstract stream)
             {
                 stream.Serialize(ref EventName);
-                stream.Serialize(ref EventData);
+                stream.Serialize(EventData, 0, EventData.Length);
+
                 stream.Serialize(ref Sender);
             }
         }

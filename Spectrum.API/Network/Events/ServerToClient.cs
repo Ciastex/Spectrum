@@ -8,12 +8,12 @@ namespace Spectrum.API.Network.Events
         public struct Data : IBitSerializable, INetworkGrouped
         {
             public string EventName;
-            public string EventData;
-            public NetworkPlayer Sender;
+            public byte[] EventData;
 
+            public NetworkPlayer Sender;
             public NetworkGroup NetworkGroup_ { get; }
 
-            public Data(string eventName, string eventData, NetworkGroup networkGroup = NetworkGroup.GlobalGroup)
+            public Data(string eventName, byte[] eventData, NetworkGroup networkGroup = NetworkGroup.GlobalGroup)
             {
                 EventName = eventName;
                 EventData = eventData;
@@ -25,7 +25,8 @@ namespace Spectrum.API.Network.Events
             void IBitSerializable.Serialize(BitStreamAbstract stream)
             {
                 stream.Serialize(ref EventName);
-                stream.Serialize(ref EventData);
+                stream.Serialize(EventData, 0, EventData.Length);
+
                 stream.Serialize(ref Sender);
             }
         }
