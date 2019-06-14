@@ -1,4 +1,5 @@
 ﻿using Events;
+using System.Text;
 using UnityEngine;
 
 namespace Spectrum.API.Network.Events
@@ -21,6 +22,9 @@ namespace Spectrum.API.Network.Events
                 Sender = UnityEngine.Network.player;
                 NetworkGroup_ = networkGroup;
             }
+
+            public Data(string eventName, string eventData, NetworkGroup networkGroup = NetworkGroup.GlobalGroup) 
+                : this(eventName, Encoding.UTF8.GetBytes(eventData), networkGroup) { }
 
             void IBitSerializable.Serialize(BitStreamAbstract stream)
             {

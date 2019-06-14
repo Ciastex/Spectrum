@@ -1,4 +1,5 @@
 ﻿using Events;
+using System.Text;
 using UnityEngine;
 
 namespace Spectrum.API.Network.Events
@@ -13,14 +14,17 @@ namespace Spectrum.API.Network.Events
             public NetworkPlayer Sender;
             public NetworkGroup NetworkGroup_ { get; }
 
-            public Data(string eventName, byte[] eventData)
+            public Data(string eventName, byte[] eventData, NetworkGroup networkGroup = NetworkGroup.GlobalGroup)
             {
                 EventName = eventName;
                 EventData = eventData;
 
                 Sender = UnityEngine.Network.player;
-                NetworkGroup_ = NetworkGroup.GlobalGroup;
+                NetworkGroup_ = networkGroup;
             }
+
+            public Data(string eventName, string eventData, NetworkGroup networkGroup = NetworkGroup.GlobalGroup)
+                : this(eventName, Encoding.UTF8.GetBytes(eventData), networkGroup) { }
 
             void IBitSerializable.Serialize(BitStreamAbstract stream)
             {
