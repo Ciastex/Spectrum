@@ -7,18 +7,22 @@ namespace Spectrum.API.Storage
 {
     public class Assets
     {
-        public AssetBundle Bundle { get; private set; }
+        private string _filePath = null;
 
         private string RootDirectory { get; }
-        private string FileName { get; }
-        private string FilePath => Path.Combine(Path.Combine(RootDirectory, Defaults.PrivateAssetsDirectory), FileName);
+        private string FileName { get; set; }
+        private string FilePath => _filePath ?? Path.Combine(Path.Combine(RootDirectory, Defaults.PrivateAssetsDirectory), FileName);
 
         private static Logging.Logger Log { get; }
+
+        public AssetBundle Bundle { get; private set; }
 
         static Assets()
         {
             Log = new Logging.Logger(Defaults.RuntimeAssetLoaderLogFileName);
         }
+
+        private Assets() { }
 
         public Assets(string fileName)
         {
@@ -32,6 +36,27 @@ namespace Spectrum.API.Storage
             }
 
             Bundle = Load();
+        }
+
+        public static Assets FromUnsafePath(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                Log.Error($"Could not find requested asset bundle at {filePath}");
+                return null;
+            }
+
+            var ret = new Assets
+            {
+                _filePath = filePath,
+                FileName = Path.GetFileName(filePath)
+            };
+            ret.Bundle = ret.Load();
+
+            if (ret.Bundle == null)
+                return null;
+
+            return ret;
         }
 
         private AssetBundle Load()

@@ -74,7 +74,7 @@ namespace Spectrum.API.Network
             }
 
             if (ClientToServerCallbacks.ContainsKey(data.EventName))
-                ClientToServerCallbacks[data.EventName].ForEach((action) => action?.Invoke(data.Sender, data.EventData));
+                ClientToServerCallbacks[data.EventName].ForEach((action) => action?.Invoke(data.Sender, ToHexDump(data.EventData)));
         }
 
         private void ServerToClientEventReceived(ServerToClient.Data data)
@@ -96,7 +96,7 @@ namespace Spectrum.API.Network
             }
 
             if (ServerToClientCallbacks.ContainsKey(data.EventName))
-                ServerToClientCallbacks[data.EventName].ForEach((action) => action?.Invoke(data.Sender, data.EventData));
+                ServerToClientCallbacks[data.EventName].ForEach((action) => action?.Invoke(data.Sender, ToHexDump(data.EventData)));
         }
 
         private void BroadcastAllEventReceived(BroadcastAll.Data data)
@@ -118,7 +118,17 @@ namespace Spectrum.API.Network
             }
 
             if (BroadcastAllCallbacks.ContainsKey(data.EventName))
-                BroadcastAllCallbacks[data.EventName].ForEach((action) => action?.Invoke(data.Sender, data.EventData));
+                BroadcastAllCallbacks[data.EventName].ForEach((action) => action?.Invoke(data.Sender, ToHexDump(data.EventData)));
+        }
+
+        private string ToHexDump(byte[] data)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var b in data)
+                sb.Append($"{b:X2}");
+
+            return sb.ToString();
         }
     }
 }

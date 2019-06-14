@@ -40,11 +40,22 @@ namespace Spectrum.API.Storage
         }
 
         public bool PathExists(string path)
+            => FileExists(path) || DirectoryExists(path);
+
+        public byte[] ReadAllBytes(string filePath)
         {
-            return FileExists(path) || DirectoryExists(path);
+            var targetFilePath = Path.Combine(VirtualFileSystemRoot, filePath);
+
+            if (!File.Exists(targetFilePath))
+            {
+                Log.Error($"Couldn't read a file for path '{targetFilePath}'. File does not exist.");
+                return null;
+            }
+
+            return File.ReadAllBytes(targetFilePath);
         }
 
-        public string CreateFile(string filePath, bool overwrite = false)
+        public FileStream CreateFile(string filePath, bool overwrite = false)
         {
             var targetFilePath = Path.Combine(VirtualFileSystemRoot, filePath);
 
@@ -52,25 +63,26 @@ namespace Spectrum.API.Storage
             {
                 if (overwrite)
                 {
+                    Log.Error($"Couldn't delete a PluginData file for path '{targetFilePath}'. File does not exist.");
                     RemoveFile(filePath);
                 }
                 else
                 {
                     Log.Error($"Couldn't create a PluginData file for path '{targetFilePath}'. The file already exists.");
-                    return string.Empty;
+                    return null;
                 }
             }
 
             try
             {
-                File.Create(targetFilePath).Dispose();
-                return targetFilePath;
+                return File.Create(targetFilePath);
             }
             catch (Exception ex)
             {
                 Log.Error($"Couldn't create a PluginData file for path '{targetFilePath}'.");
                 Log.Exception(ex);
-                return string.Empty;
+
+                return null;
             }
         }
 
@@ -128,7 +140,7 @@ namespace Spectrum.API.Storage
             }
         }
 
-        public List<string> GetDirectories(string directoryPath)
+        public List<string> GetDirectories(string directoryPath, string searchPattern)
         {
             var targetDirectoryPath = Path.Combine(VirtualFileSystemRoot, directoryPath);
 
@@ -138,10 +150,13 @@ namespace Spectrum.API.Storage
                 return null;
             }
 
-            return Directory.GetDirectories(targetDirectoryPath).ToList();
+            return Directory.GetDirectories(targetDirectoryPath, searchPattern).ToList();
         }
 
-        public List<string> GetFiles(string directoryPath)
+        public List<string> GetDirectories(string directoryPath)
+            => GetDirectories(directoryPath, "*");
+
+        public List<string> GetFiles(string directoryPath, string searchPattern)
         {
             var targetDirectoryPath = Path.Combine(VirtualFileSystemRoot, directoryPath);
 
@@ -151,8 +166,11 @@ namespace Spectrum.API.Storage
                 return null;
             }
 
-            return Directory.GetFiles(targetDirectoryPath).ToList();
+            return Directory.GetFiles(targetDirectoryPath, searchPattern).ToList();
         }
+
+        public List<string> GetFiles(string directoryPath)
+            => GetFiles(directoryPath, "*");
 
         public FileStream OpenFile(string filePath, FileMode fileMode, FileAccess fileAccess, FileShare fileShare)
         {
@@ -178,9 +196,7 @@ namespace Spectrum.API.Storage
         }
 
         public FileStream OpenFile(string filePath)
-        {
-            return OpenFile(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
-        }
+            => OpenFile(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
 
         public string CreateDirectory(string directoryName)
         {
@@ -222,13 +238,9 @@ namespace Spectrum.API.Storage
         }
 
         public static string GetValidFileName(string dirtyFileName, string replaceInvalidCharsWith = "_")
-        {
-            return Resource.GetValidFileName(dirtyFileName, replaceInvalidCharsWith);
-        }
+            => Resource.GetValidFileName(dirtyFileName, replaceInvalidCharsWith);
 
         public static string GetValidFileNameToLower(string dirtyFileName, string replaceInvalidCharsWith = "_")
-        {
-            return Resource.GetValidFileNameToLower(dirtyFileName, replaceInvalidCharsWith);
-        }
+            => Resource.GetValidFileNameToLower(dirtyFileName, replaceInvalidCharsWith);
     }
 }
