@@ -58,8 +58,6 @@
     <Compile Include="Configuration\Section.cs" />
     <Compile Include="Configuration\Settings.cs" />
     <Compile Include="Defaults.cs" />
-    <Compile Include="Events\EventArgs\CheatStateFailureEventArgs.cs" />
-    <Compile Include="Events\EventArgs\CheatStateInfoEventArgs.cs" />
     <Compile Include="Events\EventArgs\PluginInitializationEventArgs.cs" />
     <Compile Include="Interfaces\Systems\ICheatRegistry.cs" />
     <Compile Include="Interfaces\Systems\IEventRouter.cs" />
