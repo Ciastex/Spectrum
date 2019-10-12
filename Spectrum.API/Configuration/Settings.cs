@@ -1,8 +1,8 @@
+using Newtonsoft.Json;
+using Spectrum.API.Logging;
 using System;
 using System.IO;
 using System.Reflection;
-using Newtonsoft.Json;
-using Spectrum.API.Logging;
 
 namespace Spectrum.API.Configuration
 {
@@ -63,16 +63,16 @@ namespace Spectrum.API.Configuration
             try
             {
                 using (var sw = new StreamWriter(FilePath, false))
-                    sw.WriteLine(JsonConvert.SerializeObject(this));
+                    sw.WriteLine(JsonConvert.SerializeObject(this, (formatJson ? Formatting.Indented : Formatting.None)));
 
                 Dirty = false;
             }
-            catch(JsonException je)
+            catch (JsonException je)
             {
                 Logger.Error($"Could not serialize the settings object back to JSON for '{FilePath}'. See the log file for details.");
                 Logger.ExceptionSilent(je);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Error($"An unexpected exception occured while saving '{FilePath}'. See the log file for details.");
                 Logger.ExceptionSilent(e);
