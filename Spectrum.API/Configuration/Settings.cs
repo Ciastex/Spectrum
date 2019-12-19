@@ -10,12 +10,14 @@ namespace Spectrum.API.Configuration
     {
         private static Logger _logger;
         private static Logger Logger => _logger ?? (_logger = new Logger(Defaults.SettingsSystemLogFileName) { WriteToConsole = true });
+        private FileSystemWatcher Watcher;
 
         private string FileName { get; }
         private string RootDirectory { get; }
         private string SettingsDirectory => Path.Combine(RootDirectory, Defaults.PrivateSettingsDirectory);
         private string FilePath => Path.Combine(SettingsDirectory, FileName);
-
+        public event Action<Settings, FileSystemEventArgs> OnChanged;
+        
         public Settings(string fileName)
         {
             RootDirectory = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
@@ -52,7 +54,36 @@ namespace Spectrum.API.Configuration
                     }
                 }
             }
+
+            Watcher = new FileSystemWatcher
+            {
+                Path = FilePath,
+                Filter = "*",
+                NotifyFilter = NotifyFilters.FileName
+                             | NotifyFilters.LastAccess
+                             | NotifyFilters.LastWrite
+                             | NotifyFilters.DirectoryName
+                             | NotifyFilters.CreationTime
+            };
+
+            var eventhandler = new FileSystemEventHandler(OnFileChanged);
+            Watcher.Created += eventhandler;
+            Watcher.Changed += eventhandler;
+            Watcher.Deleted += eventhandler;
+
+            Watcher.EnableRaisingEvents = true;
+
             Dirty = false;
+        }
+
+        ~Settings()
+        {
+            Watcher.Dispose();
+        }
+        
+        private void OnFileChanged(object source, FileSystemEventArgs e)
+        {
+            OnChanged(this, e);
         }
 
         public void Save(bool formatJson = true)
